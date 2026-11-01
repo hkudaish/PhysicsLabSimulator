@@ -11,6 +11,15 @@ jobs:
         with:
           python-version: '3.12'
       - run: python3 -m unittest discover -s tests/phase0 -v
+  contract-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -m pip install -r tests/contracts/requirements.txt
+      - run: python3 -m unittest discover -s tests/contracts -v
   dotnet-scaffolds:
     runs-on: ubuntu-latest
     steps:
@@ -32,3 +41,22 @@ jobs:
           node-version-file: .nvmrc
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm run build
+  postgres-architecture:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16.15
+        env:
+          POSTGRES_PASSWORD: phase0-test-only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: psql -h 127.0.0.1 -U postgres -d postgres -v ON_ERROR_STOP=1 -f specs/data/postgres-spike.sql -f tests/postgres/tenant_isolation.sql
+        env:
+          PGPASSWORD: phase0-test-only

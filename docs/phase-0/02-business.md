@@ -4,6 +4,8 @@ Source: BRD sections 1–12 and V2 addendum; financial workbook sheets Assumptio
 
 Proposed segment: Saudi private schools and school groups, with GCC expansion later. Buyer, grade range, curriculum mapping, procurement cycle and willingness to pay remain unvalidated. Scientific lead approves model accuracy; instructional lead approves learning objectives; customer success owns onboarding/training/support; IT owns bulk installation; product owner resolves scope and gates.
 
+Owner steering on 2026-11-01 selected Saudi secondary-school chemistry and introductory DC electricity as the proposed planning baseline. Exact grade/unit mappings, school demand and independent scientific review still need evidence.
+
 | Proposed package | Annual SAR before VAT | Concurrent seats |
 |---|---:|---:|
 | Starter | 3,500 | 20 |

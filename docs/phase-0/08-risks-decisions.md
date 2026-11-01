@@ -4,7 +4,7 @@ All owners below are proposed roles, not assigned people. Review at each phase g
 
 | ID | Risk / unresolved decision | Impact / likelihood | Mitigation and exit evidence | Owner / needed by |
 |---|---|---|---|---|
-| R01 | No Unity, .NET, Node toolchain; protected empty Git metadata | High / actual | Install pinned tools in development environment; initial commit; empty Windows build and logs | Engineering / Phase 0 |
+| R01 | Unity editor missing; SDK/Node builds and separate-metadata Git now verified | High / actual | Licensed Unity import and empty Windows build; preserve separate Git metadata before artifact cleanup | Engineering / Phase 0 |
 | R02 | Arabic native text rendering and mixed BiDi unproven | High / high | Bundle reviewed font; test equations, signed values, focus, shaping and input; decide browser with license/cost evidence | UX + engineering / Phase 0 |
 | R03 | SQLite provider and encryption under IL2CPP unknown | High / medium | Windows save/restart/transaction rollback spike, protected keys, provider/license inventory | Engineering / Phase 0 |
 | R04 | No school hardware baseline | High / actual | Owner supplies or selects actual CPU/GPU/RAM/Windows model; measure empty project before Phase 1 budget | Product + school IT / Phase 0 |

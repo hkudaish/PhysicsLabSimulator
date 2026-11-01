@@ -15,4 +15,8 @@ python3 tools/check_environment.py
 
 The first command checks design artifacts and the SQLite design, not scientific implementations. The second exits unsuccessfully until required development tools are installed. See [development setup](docs/phase-0/10-development.md).
 
+Current evidence: **15 artifact checks, 8 API-contract tests and 8 PostgreSQL assertion groups passed**. Scientific-interface/backend builds pass with pinned .NET 10.0.402; the empty portal builds with pinned Node 24.22.2. Unity URP source is populated and pinned, but editor import and Windows execution remain unverified. The owner selected Saudi secondary school as the proposed curriculum baseline.
+
+A local recoverable repository uses separate metadata because the environment protects `.git`. Run `bash tools/git.sh status` or `bash tools/git.sh log --oneline`; preserve `artifacts/source-control.git` before clearing artifacts. No remote is configured.
+
 Phase 1 is not authorized by this package. Phase 0 has outstanding environment and owner decisions; see the report for evidence.

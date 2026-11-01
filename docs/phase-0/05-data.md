@@ -2,6 +2,8 @@
 
 This is a design, not a deployed database. Executable SQLite DDL is in `specs/data/local.sql`; PostgreSQL constraints below require a real server integration test before adoption.
 
+A limited executable PostgreSQL design spike now exists in `specs/data/postgres-spike.sql`. Eight assertion groups passed on a disposable PostgreSQL 16.15 server: tenant row policies, composite foreign keys, event uniqueness and transaction-local context. This verifies those selected architectural mechanisms; it is not a complete migration set, membership authorization system or production database. See [verification](verification.md) and [PostgreSQL row-policy documentation](https://www.postgresql.org/docs/16/ddl-rowsecurity.html).
+
 ```mermaid
 erDiagram
   TENANT ||--o{ CAMPUS : owns

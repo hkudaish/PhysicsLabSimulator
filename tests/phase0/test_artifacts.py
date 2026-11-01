@@ -3,6 +3,7 @@ import csv
 import hashlib
 import json
 import math
+import re
 from pathlib import Path
 import sqlite3
 import unittest
@@ -13,6 +14,40 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class DesignArtifacts(unittest.TestCase):
+    def test_unity_supplier_package_pins_match_lock(self):
+        packages = ROOT / 'src/UnityClient/Packages'
+        manifest = json.loads((packages / 'manifest.json').read_text())['dependencies']
+        locked = json.loads((packages / 'packages-lock.json').read_text())['dependencies']
+        for name, version in manifest.items():
+            with self.subTest(package=name):
+                self.assertEqual(version, locked[name]['version'])
+
+    def test_unity_build_scene_and_pipeline_references_exist(self):
+        project = ROOT / 'src/UnityClient'
+        settings = (project / 'ProjectSettings/EditorBuildSettings.asset').read_text()
+        scenes = re.findall(r'path: (Assets/.*\.unity)', settings)
+        self.assertTrue(scenes)
+        for scene in scenes:
+            self.assertTrue((project / scene).is_file())
+            meta = (project / (scene + '.meta')).read_text()
+            self.assertIn(re.search(r'guid: ([a-f0-9]+)', meta).group(1), settings)
+        graphics = (project / 'ProjectSettings/GraphicsSettings.asset').read_text()
+        quality = (project / 'ProjectSettings/QualitySettings.asset').read_text()
+        pipelines = re.findall(r'[Cc]ustomRenderPipeline:.*guid: ([a-f0-9]+)', graphics + quality)
+        self.assertTrue(pipelines)
+        metadata = [p.read_text() for p in (project / 'Assets').rglob('*.asset.meta')]
+        for pipeline in pipelines:
+            self.assertTrue(any(pipeline in content for content in metadata))
+
+    def test_unity_editor_pin_and_vendor_license_preserved(self):
+        project = ROOT / 'src/UnityClient'
+        source = json.loads((project / 'bootstrap-provenance.json').read_text())
+        version = (project / 'ProjectSettings/ProjectVersion.txt').read_text()
+        self.assertIn(source['editorVersion'], version)
+        self.assertIn(source['editorRevision'], version)
+        self.assertFalse(source['editorImported'])
+        self.assertTrue((project / 'ThirdParty/Unity-URP-Template-LICENSE.md').is_file())
+
     def test_original_source_hashes(self):
         manifest = json.loads((ROOT / 'docs/phase-0/source-manifest.json').read_text())
         self.assertEqual(len(manifest['files']), 6)

@@ -45,11 +45,11 @@ Strict global concurrent-seat enforcement is impossible across fully disconnecte
 
 | ID | Decision / proposed choice | Verification remaining |
 |---|---|---|
-| ADR-01 | Unity 6.3 LTS + URP; exact patch pending editor installation | Windows editor import, package lock, empty build |
-| ADR-02 | Scientific core .NET Standard 2.1, C# 9; server .NET 10 | Shared-library build and Unity import |
+| ADR-01 | Unity 6000.3.27f2 + official URP template 17.1.0; source and supplier lock pinned | Windows editor import, regenerated lock review, empty build |
+| ADR-02 | Scientific core .NET Standard 2.1, C# 9; server .NET 10 | Selected-SDK builds passed; Unity import pending |
 | ADR-03 | Native UI first; embedded browser conditional | Arabic shaping, BiDi, input/focus and license spike |
 | ADR-04 | Resistive DC MNA; no SPICE native dependency initially | Scientific reviewer and graph tests |
-| ADR-05 | SQLite local / PostgreSQL cloud | Provider/IL2CPP smoke, transactional recovery, RLS tests |
+| ADR-05 | SQLite local / PostgreSQL cloud | SQLite/PG design tests passed; Unity provider/IL2CPP recovery pending |
 | ADR-06 | Modular monolith; React portals from Phase 2 | Tenant-aware API integration tests |
 
-Version choices were checked against primary sources on 2026-11-01: [Unity LTS support](https://unity.com/releases/unity-6/support), [Unity API compatibility](https://docs.unity.com/en-us/engine/6000.3/manual/programming-environment/overview-of-dot-net-in-unity/dotnet-profile-support), [.NET download](https://dotnet.microsoft.com/en-us/download/dotnet), [Node 24.22.2](https://nodejs.org/en/blog/release/v24.22.2), [React versions](https://react.dev/versions). These references inform proposed tool versions; they do not prove local compatibility. The empty portal now has exact package pins and a lockfile and builds on installed Windows Node 22.17.0; the proposed Node 24.22.2 baseline remains unverified. npm-registry queries selected TypeScript 7.0.2, Vite 8.3.5 and React/types 19.3.0.
+Version choices were checked against primary sources on 2026-11-01: [Unity LTS support](https://unity.com/releases/unity-6/support), [Unity API compatibility](https://docs.unity.com/en-us/engine/6000.3/manual/programming-environment/overview-of-dot-net-in-unity/dotnet-profile-support), [.NET download](https://dotnet.microsoft.com/en-us/download/dotnet), [Node 24.22.2](https://nodejs.org/en/blog/release/v24.22.2), [React versions](https://react.dev/versions). The selected .NET 10.0.402 and Node 24.22.2 builds now pass using checksum-verified isolated tools. npm-registry queries selected TypeScript 7.0.2, Vite 8.3.5 and React/types 19.3.0. Unity 6000.3.27f2 and the official URP template are pinned; actual editor compatibility is still unverified.

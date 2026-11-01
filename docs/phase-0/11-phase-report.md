@@ -1,44 +1,42 @@
 # Phase completion report
 
-**Phase:** 0 — Discovery, requirements and technical architecture. Date: 2026-11-01.
+**Phase:** 0 — Discovery, requirements and architecture. Date: 2026-11-01.
 
-**Status:** Incomplete. Phase gate is **Blocked** by missing development toolchains, unverified scaffolds/spikes and unresolved owner decisions. This is a phase-report status, not a claim that no further work is possible. No exception or conditional acceptance has been granted.
+**Status:** Incomplete / **Blocked at the phase gate**. Tooling, checkpoints and architecture checks have advanced; Unity runtime evidence, scientific review and school hardware selection still prevent acceptance. Phase 1 has not started.
 
-**Scope completed:** Workspace/source audit; V2 business/requirements review; historical dialogue indexing and targeted code review; explicit gap/conflict analysis; proposed architecture and scientific boundaries; cloud ERD/local SQLite design; initial three-route API draft; interaction/RTL text wireframes; risks, backlog and roadmap. Financial Year 1 arithmetic checked independently. Original documents preserved.
+**Scope completed:** Six-file audit/preservation; gap/conflict analysis; 57-row RTM; architecture/scientific boundaries; cloud ERD/local SQLite and PostgreSQL isolation spike; 43-path/52-operation API design with 78 schemas; RTL text wireframes; risks/backlog/roadmap; actual selected-toolchain builds; official Unity template source/editor pin; local Git history. Owner confirmed Saudi secondary-school chemistry and introductory DC electricity as the proposed planning baseline. Precise curricular units remain unmapped.
 
-**Deliverables produced:** Audit, business analysis, 57-row requirements CSV, architecture, science specification, data ERD/DDL, API design/OpenAPI draft, UX specification, risks/decisions, roadmap/backlog, development instructions and this report. C# interface and empty backend host added. Empty Arabic RTL React/TypeScript project with exact dependency pins and lockfile builds successfully. Unity remains a reserved folder with setup instructions, not an initialized working project.
+**Deliverables produced:** Documents 01–12 and verification record; RTM/manifest; OpenAPI generator/validation; SQLite/PostgreSQL design SQL; analytical fixtures; scientific-interface/backend/portal scaffolds; Unity source/build entry point with supplier provenance/license; checksum-pinned tool bootstrap, development wrapper and smoke tools; draft CI.
 
-**Files created or modified:** All generated files are additions under `docs/phase-0`, `specs`, `src`, `tests/phase0`, `tools`, `.github/workflows`, plus root README, `.gitignore`, `.editorconfig`, `.nvmrc` and `global.json`. The six supplied documents are unmodified; hashes and sizes appear in `source-manifest.json`. No repository commit or remote publication occurred.
+**Files created or modified:** docs/phase-0, specs, src, tests, tools, .github/workflows and root setup files. The six originals are unchanged. Initial separate-metadata checkpoint **4cb233d** preserves original sources and earlier work; `bash tools/git.sh log --oneline` shows current history. No remote publication occurred.
 
-**Scientific tests:** No implemented solver tested. Four analytical numerical fixtures checked for arithmetic consistency; remaining invalid/conservation/topology reference scenarios are specified for Phase 1. Scientific reviewer certification remains absent.
+**Scientific tests:** Four analytical cases checked for arithmetic consistency. No scientific solver is implemented or certified. Conservation/topology/fault/replay tests are specified for Phase 1; independent scientific signoff is absent.
 
-**Integration tests:** Twelve artifact/design tests pass. Local SQLite checks exercise foreign keys, profile ownership, event/sequence uniqueness, acknowledgement constraints and atomic rollback under Python SQLite. OpenAPI references, requirement links/IDs, financial Year 1 scenario and original hashes are checked. The scientific interface compiled with zero warnings/errors in a disposable copy using Windows SDK 8.0.427; this does not validate selected SDK 10 or Unity integration. Empty portal TypeScript/production build passed on Windows Node 22.17.0. Full OpenAPI validation, backend compilation, UI integration and application-level tests remain unrun.
+**Integration tests:** **15 artifact tests and 8 API-contract tests passed.** Full OpenAPI validation passed. PostgreSQL 16.15 passed **8 assertion groups** for RLS, tenant foreign keys, update isolation, event uniqueness and transaction-local context; database stopped/removed. .NET 10.0.402 compiled interface/backend with zero warnings/errors. Node 24.22.2/npm 11.19.1 completed clean portal install/build. Development/Production scaffold smoke checks passed. These do not establish actual authentication, server grading, sync or Unity integration.
 
-**Performance results:** Not measured. No simulator or target Windows hardware exists in this workspace. Benchmark protocol/targets are proposed in the roadmap.
+**Performance results:** No laboratory or target-Windows measurements. School hardware is pending; FPS, latency and hour-long stability targets remain provisional.
 
-**Security results:** Design review identified client-grade trust, offline licensing, cross-tenant and local-data risks. SQLite ownership constraints tested. No application penetration test, RLS test, transport/encryption validation, dependency scan or signed-release verification was performed.
+**Security results:** PostgreSQL tests use synthetic tenants and a non-superuser/non-BYPASSRLS role. API schemas reject learner-supplied grade/actor/tenant fields. Download checksums and original hashes verified. Actual server authorization, signing/encryption, key protection, dependency and penetration tests remain unimplemented/unrun.
 
-**Known defects:** No executable simulator exists to defect-test. Unity/repository setup is incomplete. Draft API only formalizes three routes and a partial command catalog. Local SQL is a design spike and does not encrypt data or verify tokens. The portal is an empty scaffold without educational or administrative behavior.
+**Known defects / limits:** Unity is not installed/activated here. Supplier package lock is unverified against the pinned editor; build entry point has not compiled in Unity. Backend/portal remain empty scaffolds. PostgreSQL is a limited design spike, not production migrations. API contracts need detailed edit/admin and LMS protocol refinement before affected Phase 2 work.
 
-**Unfinished requirements:** Real Unity project and exact package/editor locks; empty Windows build; RTL and SQLite/IL2CPP spikes; validation on pinned Node 24; .NET 10/backend compilation; usable source repository and recoverable checkpoint; complete API schemas; scientific reviewer and hardware selection; owner review of target curriculum/licensing/privacy/budget assumptions.
+**Unfinished requirements:** Licensed Unity import/Windows build; native Arabic shaping/BiDi/input spike; Unity SQLite/IL2CPP/provider/recovery/protection decision; school hardware baseline; scientific reviewer/fixture tolerances; exact curriculum mapping; owner architecture/MVP review. No external approvals or market evidence are fabricated.
 
 ## Phase 0 acceptance assessment
 
 | Criterion | Evidence | Decision |
 |---|---|---|
-| Requirements reviewed/categorized | BR-01–10, FR-01–12 and Master Prompt rows in requirements.csv | Drafted; owner review pending |
-| Architecture documented | 03-architecture.md, trust boundaries and decision log | Drafted; compatibility spikes pending |
-| Chemistry/electricity models defined | 04-scientific-models.md, numerical fixtures | Drafted; scientific signoff pending |
-| Database architecture established | 05-data.md ERD and tested local.sql design | Drafted; PostgreSQL/provider integration pending |
-| Major risks/dependencies identified | 08-risks-decisions.md | Documented |
-| Initial MVP clearly scoped | 09-roadmap-backlog.md Phases 1 and 2 | Drafted; owner confirmation pending |
-| Reproducible development/build tools | Core/portal fallback builds pass; Unity, selected SDK 10/Node 24 and usable .git remain missing | Not met |
-| Measurable Phase 1 tests | SCI-C/E cases, P1-01–11 backlog and benchmark protocol | Defined; hardware/tolerance review pending |
+| Requirements reviewed/categorized | Source/conflict audit, 57 rows, proposed Saudi secondary baseline confirmed | Detailed review pending |
+| Architecture documented | Boundaries, trust model, decisions, actual scaffold builds | Unity compatibility spikes pending |
+| Science models defined | Assumptions/units/tolerances/reference cases | Independent scientific review pending |
+| Database architecture | ERD, SQLite tests, two-tenant PostgreSQL spike | Unity provider pending |
+| Risks/dependencies identified | R01–R15 and concrete Unity handoff | Documented |
+| MVP scoped | Two Phase 1 experiments; Phase 2 institution workflows | Owner review pending |
+| Reproducible environment/builds | Verified SDK/Node, locks/builds, checkpoint, Unity source pin | Real Unity import/Windows build required |
+| Measurable Phase 1 tasks | P1-01–11, reference cases, benchmark protocol | School hardware/reviewer pending |
 
-**Risks and dependencies:** See R01–R15. There are no measured customer/pilot/production outcomes. Document scope is not implementation evidence.
+**Recommended next steps:** Configure licensed Unity and run [import/build/RTL/provider checks](12-unity-validation.md); select representative school PC specifications; assign scientific review and map curriculum units. Then reassess Phase 0 before Phase 1.
 
-**Recommended next steps:** Complete P0-01–P0-06 in a configured Windows/Unity development environment, review proposed scientific and commercial decisions, capture build/spike evidence, then reassess this gate. Phase 1 development remains unstarted.
+**Phase acceptance decision required:** Prompt.txt and V2 gates require evidence before progression. The owner's “go ahead” authorized continued Phase 0 work; it does not replace missing evidence. Phase 1 approval follows prerequisites and the gate report.
 
-**Phase acceptance decision required:** Owner review is required by `Prompt.txt`, Part XI and Phase 0 exit gate, and the V2 addenda. The prerequisite gate has not passed, so this report does not ask for approval to begin Phase 1. Approval should follow the outstanding evidence and review, not replace them.
-
-Machine-check results are recorded in [verification.md](verification.md).
+See [verification.md](verification.md) for commands and observed results.

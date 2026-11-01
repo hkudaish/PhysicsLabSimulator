@@ -1,36 +1,30 @@
 # Verification record
 
-Date: 2026-11-01. Environment: current Linux/WSL shell in `/mnt/d/PhysicsLabSimulator`. Windows hardware/runtime not validated.
+Date: 2026-11-01. Linux/WSL build shell; target-school Windows runtime remains unvalidated.
 
-| Command / inspection | Observed result | Meaning |
+| Check | Observed result | Boundary |
 |---|---|---|
-| `python3 -m unittest discover -s tests/phase0 -v` | 12 tests passed | Design/fixture/SQLite checks only |
-| Original-source manifest check | Six hashes and byte sizes matched | Supplied documents preserved |
-| Requirements integrity | Unique IDs, all BR/FR IDs, phases 0–5, local design links | Traceability structure valid; product tests planned |
-| OpenAPI local reference/auth checks | Passed | Local refs resolve; auth and retry contracts declared; not full OpenAPI validation |
-| Analytical fixture arithmetic | Two chemistry and two electrical cases passed | Expected numbers self-consistent; no C# solver executed |
-| Workbook numeric check | Year 1 net revenue/contribution/result/cash and funding totals match caches | Narrow independent arithmetic verification; not full workbook recalculation |
-| SQLite in-memory design tests | FK/profile isolation, uniqueness, ack receipt, atomic rollback and missing content checks passed | DDL behavior verified under Python SQLite; no Unity/provider/encryption test |
-| `python3 tools/check_environment.py` | Exit 1; missing/inoperative required tools | Environment gate correctly remains open |
-| `git status --short` | Fatal: not a Git repository | No checkpoint/commit exists |
-| dotnet / node / Unity | Not available on PATH | C# compilation, frontend build, editor import and Windows build unrun |
-| npm | Executable reports WSL 1 unsupported / cannot determine Node directory | Present wrapper is unusable; not a functional npm environment |
-| Git | Version 2.43.0 available | Tool exists; workspace metadata is not a usable repository |
+| `python3 -m unittest discover -s tests/phase0 -v` | **15 passed** | Design/source/fixtures/SQLite/Unity-source consistency |
+| `/tmp/stem-contract-venv/bin/python -m unittest discover -s tests/contracts -v` | **8 passed** | Full OpenAPI validation, deterministic generation, request shapes and declared permissions; no server authorization |
+| API inventory | 43 paths, 52 operations, 78 schemas | Design only; application routes unimplemented |
+| Original manifest | Six hashes/byte sizes matched | Originals unchanged |
+| RTM integrity | 57 rows; BR/FR IDs, phases and links checked | Product tests remain planned |
+| Analytical fixtures | Two chemistry/two electricity expectations consistent | No scientific implementation tested |
+| Workbook arithmetic | Year 1 totals/cash and phase-funding totals match caches | Not full workbook recalculation or a forecast |
+| SQLite design | Ownership/FK/uniqueness/ack/rollback checks pass | Python SQLite, not Unity provider/encryption |
+| SDK/Node archives | Official SHA-512/SHA-256 verified | Isolated /tmp install; system tools unchanged |
+| Scientific.Core build through tools/dev.py | **SDK 10.0.402: zero warnings/errors** | Interface only |
+| Backend build through tools/dev.py | **SDK 10.0.402: zero warnings/errors** | Empty host |
+| Portal clean npm ci and npm run build | **Node 24.22.2/npm 11.19.1: passed** | Empty shell; no runtime BiDi/accessibility proof |
+| `python3 tools/smoke_backend.py` | Development health 200; Production health 404; application route 404 in both | Loopback processes stopped; logs under artifacts |
+| `python3 tools/run_postgres_spike.py` | **8 assertion groups passed, PostgreSQL 16.15** | Private Unix socket; synthetic data; database stopped/removed |
+| Unity template bootstrap | Registry SHA-1 and pinned SHA-256 matched; 65 supplier files plus license/editor metadata | Supplier caches excluded; editor import unrun |
+| Unity source consistency | Direct pins match supplier lock; scenes/GUIDs/quality pipelines exist; license preserved | Not editor compilation, Windows build or provider test |
+| Local Git checkpoint | **4cb233d**, separate metadata under artifacts/source-control.git | Protected .git untouched; use tools/git.sh; no remote |
+| Environment checker | SDK/Node pins, npm, Git/checkpoint available; exit 1 for missing Unity | Expected remaining environment gate |
 
-CI workflow was authored but not executed remotely. No performance, pilot, customer, grade-integrity, deployment or production claims are supported by these checks.
+PostgreSQL assertions cover: default deny without context/restricted role; own-tenant visibility; foreign insert rejection; composite parent-FK rejection; tenant-changing update rejection; event ID/sequence uniqueness; context cleared after commit; second-tenant isolation.
 
-## Windows tooling follow-up
+Earlier Windows SDK 8/Node 22 fallback builds are superseded by selected-toolchain builds. Read-only home/runtime and network/socket restrictions were resolved through writable tool/cache paths and authorized network/loopback execution. No compiler warnings or tests were disabled.
 
-After the PATH check, read-only inspection found Windows .NET/Node installations outside PATH. Normal sandbox calls failed with WSL `UtilBindVsockAnyPort` errors; approved execution outside the sandbox succeeded. No toolchain installation was performed.
-
-| Follow-up | Observed result | Limits |
-|---|---|---|
-| Windows dotnet `--list-sdks` / `--info` | SDK 8.0.427, runtime 8.0.33, win-x64 | Selected SDK 10.0.402 not installed; backend net10.0 uncompiled |
-| Windows Node `--version` | v22.17.0, npm 10.9.2 | Selected Node 24.22.2 not installed |
-| Disposable Scientific.Core copy with SDK 8 pin | Release build passed, 0 warnings/errors | Interface only; original SDK-10-pinned build and Unity import unverified |
-| Registry version queries and local install | Exact pins and package-lock generated; lifecycle scripts disabled | No dependency security scan claimed |
-| Portal `npm run build` | TypeScript check and Vite 8.3.5 production build passed | Empty shell only; no runtime/BiDi/accessibility check |
-| Portal `npm ci --ignore-scripts --no-audit --no-fund` | Clean lockfile install passed; 23 packages installed | Windows Node 22.17.0; pinned Node 24 still unverified |
-| Portal lockfile root dependency comparison | Matches exact package.json pins | Dependency integrity structure only; not a vulnerability scan |
-
-The earlier PATH observations remain valid, but must not be interpreted as absence of Windows installations. See [development setup](10-development.md) for commands and remaining environment work.
+No Unity installation/activation, school-PC performance benchmark, scientific certification, pilot/customer outcome, production deployment, penetration test, signed release or remote CI run is claimed.

@@ -1,46 +1,62 @@
 # Development setup and verification
 
-## What exists
+## Verified baseline
 
-Pure C# scientific-interface project (`netstandard2.1`, C# 9), ASP.NET Core empty development health host (`net10.0`), empty buildable RTL React/TypeScript portal, reserved Unity module, OpenAPI/SQLite design artifacts, reference fixtures, stdlib Python artifact checks and draft CI. No simulator, portal features, authentication or solver implementations exist. The scientific interface compiled in a disposable copy using installed Windows SDK 8.0.427; the pinned SDK 10 and backend target remain unverified.
+.NET SDK **10.0.402**, Node **24.22.2** and npm **11.19.1** are isolated under `/tmp/virtual-stem-toolchain`. Official archive checksums are pinned and verified by `tools/bootstrap_toolchain.py`. System installations and the user's home directory are unchanged. Rebootstrap after `/tmp` is cleared.
 
-Proposed folder conventions: `src/Scientific.Core` has no engine dependencies; `src/UnityClient` owns scene/render/input; `src/Backend` owns future server modules; `src/Portal` owns future web UI. `specs` holds versioned contracts; `tests` holds repeatable evidence; `docs/phase-0` holds review artifacts; `tools` holds setup/verification. Never place build outputs, tokens, student records or machine-specific editor files in source control.
+Both scientific-interface and backend projects build with zero warnings/errors using the selected SDK. The empty Arabic RTL React/TypeScript portal passes clean lockfile installation and production build using selected Node 24. Backend smoke checks verify Development `/health` = 200, Production `/health` = 404, and unimplemented application routes = 404.
 
-## Run now
+Unity project source now comes from the verified official URP template, with editor **6000.3.27f2** pinned. Editor import, Windows build, Arabic rendering and SQLite/IL2CPP spikes remain unverified. See [the concrete Unity handoff](12-unity-validation.md). No solver or playable laboratory is implemented.
+
+## Reproduce builds
+
+Python 3.12+, network access and Linux x64 are required:
+
+```sh
+python3 tools/bootstrap_toolchain.py
+python3 tools/dev.py dotnet build src/Scientific.Core/Scientific.Core.csproj --configuration Release --nologo
+python3 tools/dev.py dotnet build src/Backend/Backend.csproj --configuration Release --nologo
+python3 tools/dev.py npm --prefix src/Portal ci --ignore-scripts --no-audit --no-fund
+python3 tools/dev.py npm --prefix src/Portal run build
+python3 tools/check_environment.py
+python3 tools/smoke_backend.py
+```
+
+Use bootstrap `--offline` when verified archives remain in `/tmp`. `tools/dev.py` sets PATH and writable .NET runtime/cache and npm cache locations. NuGet/npm restore and loopback checks may need authorized execution outside the sandbox. The environment checker intentionally returns 1 until the selected Unity editor is available. Editor availability alone does not satisfy import/build acceptance.
+
+The health endpoint reports scaffold status only. No authentication, tenant routes, database or student data is wired into the backend.
+
+## Artifact and API checks
 
 ```sh
 python3 -m unittest discover -s tests/phase0 -v
-python3 tools/check_environment.py
+python3 -m venv --without-pip /tmp/stem-contract-venv
+python3 -m pip --python /tmp/stem-contract-venv/bin/python install -r tests/contracts/requirements.txt --cache-dir /tmp/stem-pip-cache
+/tmp/stem-contract-venv/bin/python -m unittest discover -s tests/contracts -v
 ```
 
-Artifact tests cover original hashes, requirement IDs/links, JSON schema references, analytical fixture arithmetic, financial Year 1 arithmetic and SQLite ownership/uniqueness/acknowledgement/transaction constraints. They do not test an implemented scientific engine, renderer, encrypted local storage or sync service.
+The first suite has 15 checks: original hashes, RTM links, local constraints, analytical/workbook arithmetic and Unity supplier-project consistency. The second has 8 checks, including full OpenAPI validation and rejection of learner grade/tenant/actor fields. These validate contracts, not implemented authentication or business logic. `python3 tools/build_api_contract.py` deterministically regenerates the API design.
 
-## Finish environment baseline
+## PostgreSQL architecture spike
 
-Install .NET SDK 10.0.402 (pinned by `global.json`), Node 24.22.2, npm, Unity Hub and Unity 6.3 LTS with Windows build support in a suitable development environment. Exact Unity patch and URP/Input System/Test Framework/package locks must be recorded after clean import. Validate compatibility before accepting pins; no SDK has been installed during this task. Sources are linked in the architecture document.
+PostgreSQL 16.15 Ubuntu packages were downloaded/extracted under `/tmp`; no service was installed. On Ubuntu 24.04 x64, download `postgresql-16`, `postgresql-client-16` and `libpq5`, each version `16.15-0ubuntu0.24.04.1`, using `apt-get download` in `/tmp/stem-postgres-packages`. Extract each `.deb` with `dpkg-deb -x <archive> /tmp/stem-postgres-root`.
 
-Then run:
+From the project root run `python3 tools/run_postgres_spike.py`. It creates a private temporary database and Unix socket, runs synthetic two-tenant checks, then stops/removes the database. Eight assertion groups passed; log: `artifacts/postgres-spike.log`. SQL is a limited architecture spike, not production migrations. Draft CI repeats its assertions; remote CI has not run.
+
+## Source control and checkpoints
+
+The six supplied documents remain unchanged. Protected empty `.git` remains untouched. A usable local repository has separate metadata at `artifacts/source-control.git`; checkpoint **4cb233d** preserves earlier work and original sources. Use:
 
 ```sh
-dotnet build src/Scientific.Core/Scientific.Core.csproj --configuration Release
-dotnet build src/Backend/Backend.csproj --configuration Release
-dotnet run --project src/Backend/Backend.csproj --environment Development
+bash tools/git.sh status --short
+bash tools/git.sh log --oneline
+bash tools/git.sh diff
 ```
 
-The development `/health` endpoint reports scaffold status only; it must not be used as production readiness. No database, user identity or tenant access is wired up. Bind local-only during initial work.
+Ordinary Git cannot discover this metadata because protected `.git` prevents a normal pointer file. No remote is configured. Preserve the metadata directory or export a Git bundle before clearing `artifacts`; it contains local history. A future unrestricted checkout can use standard Git metadata.
 
-Create/import the Universal 3D project using `src/UnityClient/README.md`, then produce an empty Windows build and run the RTL/provider spikes. The empty RTL React+TypeScript shell now has exact pins/lockfile; typecheck/build and a subsequent clean `npm ci --ignore-scripts` passed on Windows Node 22.17.0. Validate using the selected Node baseline before closing that environment criterion. Unity licensing and a target Windows test machine are external dependencies.
+## Conventions and pipeline
 
-Windows tooling discovered at `C:\Program Files\dotnet\dotnet.exe` (SDK 8.0.427) and `C:\Program Files\nodejs\node.exe` (22.17.0) works through WSL only outside the sandbox in this session. The shell PATH tools fail independently. Do not describe these installations as missing from the machine; they do not match the selected pins.
+Scientific.Core has no Unity/rendering/network dependency. UnityClient owns assets/presentation; Backend and Portal reserve server/admin modules. Specs/tests are versioned separately. Reject invalid/nonfinite quantities and unsupported models; preserve scientific state on rejection. Never infer measurements from scene color or position.
 
-## Source preservation and Git
-
-The supplied six documents remain byte-for-byte unchanged (manifest hashes checked). Current `.git` is an empty protected environment directory and Git reports no repository. Do not delete it or claim a commit/checkpoint. Initialize Git in an owner-configured writable checkout, then capture these files as an initial checkpoint; do not silently relocate the project or change the protected directory. Current changes are reversible additions to a document-only workspace.
-
-Proposed branching: protected `main`, short task branches, reviewed pull requests, phase tags only after acceptance. Build and review before merging. Commit atomic changes with requirement IDs; never commit institutional data or secrets. No remote has been configured or contacted.
-
-## Coding and pipeline standards
-
-Scientific code uses canonical units, finite input validation, immutable state, deterministic command sequences, explicit error types and versioned assumptions. Unity adapters may not change solver values. Async I/O and rendering communicate through data contracts, cancellation and revision checks. No undocumented sample-code copy or native plugin dependency.
-
-The draft GitHub workflow runs Python checks, two .NET scaffold builds and a locked portal build. It has not run remotely because no repository/remote exists. Unity jobs are still missing pending real project setup. Release CI must add scientific tests, Unity edit/play-mode tests, Windows build/smoke, asset/dependency scans and signing when those components exist. Pipeline YAML alone is not successful-build evidence.
+Draft CI checks artifacts, full API contracts, .NET builds, the locked portal and PostgreSQL isolation. Unity CI awaits licensed editor setup. Later phases add implemented solver, authorization, synchronization, installation and performance tests, signing and dependency/license scans. No remote workflow execution is claimed.

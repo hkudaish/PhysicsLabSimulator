@@ -1,0 +1,14 @@
+{
+  "editorVersion": "6000.3.27f2",
+  "editorRevision": "22188f149405",
+  "editorMetadata": "https://services.api.unity.com/unity/editor/release/v1/releases?version=6000.3&limit=1",
+  "template": "com.unity.template.urp-blank",
+  "templateVersion": "17.1.0",
+  "templateUrl": "https://download.packages.unity.com/com.unity.template.urp-blank/-/com.unity.template.urp-blank-17.1.0.tgz",
+  "templateSha256": "7fa34efa44a7cf7009d1a45277fb45b7cb8d9c731d57532bb03fd1452ab62a7c",
+  "templateMetadata": "https://packages.unity.com/com.unity.template.urp-blank",
+  "supplierLockfile": true,
+  "editorImported": false,
+  "windowsBuildVerified": false,
+  "note": "Official template source only; caches excluded. Supplier lockfile is not proof of import with the selected editor."
+}

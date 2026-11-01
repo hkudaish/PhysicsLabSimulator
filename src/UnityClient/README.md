@@ -1,5 +1,5 @@
-# Unity setup pending
+# Unity URP scaffold — editor verification pending
 
-This is a reserved module, not an importable Unity project. Unity is not installed in the current environment. Create a Unity 6.3 LTS Universal 3D project here using Unity Hub once available; record exact editor version/revision and commit generated ProjectSettings, Packages manifest/lock and Assets metadata. Do not select an unverified editor patch or fabricate a scene.
+Project source comes from Unity's official `com.unity.template.urp-blank` 17.1.0 archive, verified by registry SHA-1 and pinned SHA-256. Supplier Assets, Packages and ProjectSettings are present; supplier caches are excluded. Editor 6000.3.27f2/revision 22188f149405 is pinned from official release metadata. The supplier license is in ThirdParty and provenance is recorded in bootstrap-provenance.json.
 
-Before the Phase 0 gate: empty Windows x64 build; Arabic native-UI shaping/BiDi/font spike; SQLite provider/IL2CPP smoke; import Scientific.Core built for .NET Standard 2.1. Commit dependency and asset license inventory. Unity code must not duplicate scientific calculations. Lab scenes and experiments start only after Phase 1 approval.
+No editor import or build occurred. Before the Phase 0 gate: import/resolve with the selected licensed editor, review regenerated package locks, build/run empty Windows x64 scaffold, run native Arabic and SQLite/IL2CPP spikes, and import Scientific.Core. The entry point `VirtualStem.EditorTools.Phase0Build.BuildWindows` is prepared but uncompiled in Unity. See [the handoff](../../docs/phase-0/12-unity-validation.md). No laboratory interaction or solver behavior exists.

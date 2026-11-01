@@ -16,11 +16,11 @@ Durations are source planning ranges, not delivery promises. Staffing, scientifi
 | ID | Task | Dependencies | Acceptance |
 |---|---|---|---|
 | P0-01 | Review supplied-file audit and conflicts | Owner | Each proposed resolution approved or assigned |
-| P0-02 | Finish toolchain/repository baseline | Permitted Git metadata; Unity/.NET/Node installation | Initial recoverable commit; exact versions/locks; clean builds and logs |
+| P0-02 | Finish Unity environment baseline | Licensed Unity and Windows machine | SDK/Node builds and separate-metadata Git checkpoint complete; Unity source pinned; real import/build pending |
 | P0-03 | Native Arabic UI spike | Unity/font/license | Arabic shaping + mixed equation + keyboard focus verified in Windows build |
 | P0-04 | SQLite/IL2CPP spike | Unity/SQLite provider | Transactional save/restart/rollback on Windows; encryption/provider decision |
 | P0-05 | Scientific review and school baseline | Named reviewer, school IT | Signed model/fixture tolerances; actual hardware selected |
-| P0-06 | Complete API schemas and selected-Node validation | Toolchain/security review | Full API validation; empty React scaffold/pins/lockfile already build on Node 22; verify selected Node 24 |
+| P0-06 | Review expanded API baseline | Owner/security review | 52 operations/78 schemas pass full validation; selected Node 24 clean install/build passed; detailed Phase 2 refinements tracked |
 | P0-07 | Owner Phase 0 gate review | P0-01–06 | Accepted architecture/MVP boundaries; reproducible environment; explicit Phase 1 authorization |
 
 ## Precise Phase 1 backlog (not started)
