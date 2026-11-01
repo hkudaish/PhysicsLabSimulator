@@ -1,6 +1,6 @@
 # Phase 0 review package
 
-Read [the phase report](11-phase-report.md) first for completion status and outstanding work. Phase 0 has not passed; Phase 1 has not started.
+Read [the current gate decision](14-gate-decision.md) and [phase report](11-phase-report.md). Phase 0 architecture/scaffolding is complete; the owner authorized the Godot functional prototype. Scientific and target-hardware acceptance remain pending Phase 1 validation.
 
 | Deliverable | Artifact |
 |---|---|

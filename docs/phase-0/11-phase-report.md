@@ -2,7 +2,7 @@
 
 **Phase:** 0 — Discovery, requirements and architecture. Date: 2026-11-01.
 
-**Status:** Phase 0 gate pending owner architecture/planning review. **The Godot alternative's technical compatibility spike passed**, including a real standalone Windows export. Unity remains unavailable; it is no longer the only evaluated route. Owner engine-baseline selection, school hardware and human/scientific review remain open. Phase 1 has not started.
+**Current status:** Passed for discovery/architecture/scaffolding; Godot selected and Phase 1 prototype work authorized by the owner's continuation after preview review. See [the current gate decision](14-gate-decision.md). Scientific certification, representative school hardware and production acceptance remain unverified. The assessment below preserves the earlier pre-decision review record; its pending engine-selection items are superseded by the gate decision.
 
 **Scope completed:** Six-file audit/preservation; gap/conflict analysis; 58-row RTM; architecture/scientific boundaries; cloud ERD/local SQLite and PostgreSQL isolation spike; 43-path/52-operation API design with 78 schemas; RTL text wireframes; risks/backlog/roadmap; actual selected-toolchain builds; official Unity template source/editor pin; local Git history. Owner confirmed Saudi secondary-school chemistry and introductory DC electricity as the proposed planning baseline. Precise curricular units remain unmapped.
 
