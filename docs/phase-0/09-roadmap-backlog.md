@@ -17,8 +17,8 @@ Durations are source planning ranges, not delivery promises. Staffing, scientifi
 |---|---|---|---|
 | P0-01 | Review supplied-file audit and conflicts | Owner | Each proposed resolution approved or assigned |
 | P0-02 | Finish Unity environment baseline | Licensed Unity and Windows machine | SDK/Node builds and separate-metadata Git checkpoint complete; Unity source pinned; real import/build pending |
-| P0-03 | Native Arabic UI spike | Unity/font/license | Arabic shaping + mixed equation + keyboard focus verified in Windows build |
-| P0-04 | SQLite/IL2CPP spike | Unity/SQLite provider | Transactional save/restart/rollback on Windows; encryption/provider decision |
+| P0-03 | Run prepared native Arabic UI spike | Licensed Unity | Diagnostic screen/dynamic fonts/fallback/license and glyph checks prepared; actual shaping/editing/focus/Windows visual review pending |
+| P0-04 | Run prepared SQLite/IL2CPP spike | Licensed Unity/C++ toolchain | Shared native code passes Windows/Linux standalone probes and API-profile build; execute Unity IL2CPP/recovery and choose protection/provider policy |
 | P0-05 | Scientific review and school baseline | Named reviewer, school IT | Signed model/fixture tolerances; actual hardware selected |
 | P0-06 | Review expanded API baseline | Owner/security review | 52 operations/78 schemas pass full validation; selected Node 24 clean install/build passed; detailed Phase 2 refinements tracked |
 | P0-07 | Owner Phase 0 gate review | P0-01–06 | Accepted architecture/MVP boundaries; reproducible environment; explicit Phase 1 authorization |

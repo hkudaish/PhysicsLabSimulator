@@ -1,0 +1,60 @@
+{
+  "date": "2026-11-01",
+  "scope": "Observed standalone architecture-spike execution; not a Unity or production acceptance record.",
+  "sourceSha256": "e5c897ec4a99df39d93f1a22d4863522cf4cae429309e874b4212d3af144238f",
+  "schemaSha256": "553b4ef79873e1af5b86db799ce0de081844d195854929480619d2cba1ea6f86",
+  "results": {
+    "linux": {
+      "provider": "libsqlite3.so.0",
+      "sqliteVersion": "3.45.1",
+      "runtime": ".NET 10.0.13",
+      "passed": [
+        "foreign keys enabled",
+        "WAL available",
+        "bound Arabic and quoted JSON roundtrip",
+        "snapshot journal and outbox committed",
+        "cross-profile event rejected",
+        "duplicate event rejected",
+        "ack requires receipt",
+        "failed transaction rolls back all writes",
+        "close reopen preserves full JSON",
+        "database integrity",
+        "abrupt-process-exit recovery",
+        "Unicode database directory"
+      ],
+      "unityIl2cppVerified": false,
+      "platform": "linux",
+      "scope": "Standalone native interop only; Unity/IL2CPP/encryption unverified."
+    },
+    "windows": {
+      "provider": "winsqlite3",
+      "sqliteVersion": "3.53.4",
+      "runtime": ".NET 8.0.33",
+      "passed": [
+        "foreign keys enabled",
+        "WAL available",
+        "bound Arabic and quoted JSON roundtrip",
+        "snapshot journal and outbox committed",
+        "cross-profile event rejected",
+        "duplicate event rejected",
+        "ack requires receipt",
+        "failed transaction rolls back all writes",
+        "close reopen preserves full JSON",
+        "database integrity",
+        "abrupt-process-exit recovery",
+        "Unicode database directory"
+      ],
+      "unityIl2cppVerified": false,
+      "platform": "windows",
+      "scope": "Standalone native interop only; Unity/IL2CPP/encryption unverified."
+    }
+  },
+  "sharedProfileBuild": {
+    "target": "netstandard2.1",
+    "language": "C# 9",
+    "warnings": 0,
+    "errors": 0
+  },
+  "unityUiCompiled": false,
+  "unityIl2cppExecuted": false
+}

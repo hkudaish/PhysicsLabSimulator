@@ -14,6 +14,21 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class DesignArtifacts(unittest.TestCase):
+    def test_compatibility_probe_uses_the_authoritative_schema(self):
+        schema = (ROOT / 'specs/data/local.sql').read_bytes()
+        self.assertEqual(schema, (ROOT / 'src/UnityClient/Assets/Resources/Phase0/local.sql.txt').read_bytes())
+        provenance = json.loads((ROOT / 'src/UnityClient/compatibility-assets.json').read_text())
+        self.assertEqual(hashlib.sha256(schema).hexdigest(), provenance['schema']['sha256'])
+
+    def test_bundled_diagnostic_fonts_and_licenses_match_provenance(self):
+        project = ROOT / 'src/UnityClient'
+        doc = json.loads((project / 'compatibility-assets.json').read_text())
+        resources = project / 'Assets/Resources/Phase0'
+        for font, filename in zip(doc['fonts'], ('Tajawal-Regular.ttf', 'DejaVuSans.ttf')):
+            with self.subTest(font=font['name']):
+                self.assertEqual(hashlib.sha256((resources / filename).read_bytes()).hexdigest(), font['sha256'])
+                self.assertEqual(hashlib.sha256((project / font['license']).read_bytes()).hexdigest(), font['licenseSha256'])
+
     def test_unity_supplier_package_pins_match_lock(self):
         packages = ROOT / 'src/UnityClient/Packages'
         manifest = json.loads((packages / 'manifest.json').read_text())['dependencies']

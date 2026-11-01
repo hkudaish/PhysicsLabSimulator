@@ -18,3 +18,4 @@ Read [the phase report](11-phase-report.md) first for completion status and outs
 | Phase report and verification evidence | [11-phase-report.md](11-phase-report.md), [verification.md](verification.md) |
 | Original-file preservation | [source-manifest.json](source-manifest.json) |
 | Unity import/build/Arabic/provider handoff | [12-unity-validation.md](12-unity-validation.md) |
+| Native SQLite execution spike | [README](../../spikes/NativeSqlite/README.md), [runner](../../tools/run_native_sqlite_spike.py) |

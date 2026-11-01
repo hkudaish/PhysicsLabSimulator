@@ -6,7 +6,7 @@ All owners below are proposed roles, not assigned people. Review at each phase g
 |---|---|---|---|---|
 | R01 | Unity editor missing; SDK/Node builds and separate-metadata Git now verified | High / actual | Licensed Unity import and empty Windows build; preserve separate Git metadata before artifact cleanup | Engineering / Phase 0 |
 | R02 | Arabic native text rendering and mixed BiDi unproven | High / high | Bundle reviewed font; test equations, signed values, focus, shaping and input; decide browser with license/cost evidence | UX + engineering / Phase 0 |
-| R03 | SQLite provider and encryption under IL2CPP unknown | High / medium | Windows save/restart/transaction rollback spike, protected keys, provider/license inventory | Engineering / Phase 0 |
+| R03 | Native SQLite works in standalone hosts; Unity IL2CPP and encryption remain unknown | High / medium | Windows/Linux interop and abrupt-exit checks passed; execute prepared Unity diagnostic and choose protected-key/provider policy | Engineering / Phase 0 |
 | R04 | No school hardware baseline | High / actual | Owner supplies or selects actual CPU/GPU/RAM/Windows model; measure empty project before Phase 1 budget | Product + school IT / Phase 0 |
 | R05 | No scientific reviewer, dataset or certified tolerances | High / actual | Named reviewer, equation references, licensed source data and signed fixture review | Scientific lead / Phase 0 |
 | R06 | Broad content demands exceed team capacity | High / high | Two initial experiments only; qualified authors; per-pack validation cost | Product / Phase 0 |

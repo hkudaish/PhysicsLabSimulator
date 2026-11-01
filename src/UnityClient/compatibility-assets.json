@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-01",
+  "fonts": [
+    {
+      "name": "Tajawal Regular",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/tajawal/Tajawal-Regular.ttf",
+      "sha256": "6882892da3e03527d5db2bbab3b48bde6ef2e878a43f522d1a4eebda90010a19",
+      "license": "ThirdParty/Fonts/Tajawal-OFL.txt",
+      "licenseSha256": "c504e4e70d0e8048c69bc5330c8ca3d388533758c747f28f79b4de640210e630"
+    },
+    {
+      "name": "DejaVu Sans",
+      "source": "Ubuntu fonts-dejavu-core, /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+      "upstream": "https://dejavu-fonts.github.io/",
+      "sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280",
+      "license": "ThirdParty/Fonts/DejaVu-COPYRIGHT.txt",
+      "licenseSha256": "e81d9dced49fea2a7d576cbea283873de58563c5d488f954deb282843c3ea79c"
+    }
+  ],
+  "schema": {
+    "path": "src/UnityClient/Assets/Resources/Phase0/local.sql.txt",
+    "sha256": "553b4ef79873e1af5b86db799ce0de081844d195854929480619d2cba1ea6f86"
+  },
+  "coverageNote": "Tajawal lacks U+2082. DejaVu Sans fallback contains it. Rendering remains unverified."
+}

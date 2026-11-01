@@ -35,7 +35,9 @@ python3 -m pip --python /tmp/stem-contract-venv/bin/python install -r tests/cont
 /tmp/stem-contract-venv/bin/python -m unittest discover -s tests/contracts -v
 ```
 
-The first suite has 15 checks: original hashes, RTM links, local constraints, analytical/workbook arithmetic and Unity supplier-project consistency. The second has 8 checks, including full OpenAPI validation and rejection of learner grade/tenant/actor fields. These validate contracts, not implemented authentication or business logic. `python3 tools/build_api_contract.py` deterministically regenerates the API design.
+The first suite has 17 checks: original hashes, RTM links, local constraints, analytical/workbook arithmetic, Unity supplier-source consistency and bundled probe assets/licenses/schema. The second has 8 checks, including full OpenAPI validation and rejection of learner grade/tenant/actor fields. These validate contracts, not implemented authentication or business logic. `python3 tools/build_api_contract.py` deterministically regenerates the API design.
+
+Standalone native SQLite probes run with `python3 tools/run_native_sqlite_spike.py` and `python3 tools/run_native_sqlite_spike.py --windows`. Each passed 12 assertions, including abrupt-process-exit recovery. The Windows diagnostic deliberately uses installed SDK 8.0.427 in its own scoped project; this does not change the backend SDK selection. The shared source also builds against .NET Standard 2.1. See [NativeSqlite](../../spikes/NativeSqlite/README.md) and [the Unity diagnostic](12-unity-validation.md).
 
 ## PostgreSQL architecture spike
 

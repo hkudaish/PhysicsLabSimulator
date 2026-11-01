@@ -11,6 +11,8 @@ jobs:
         with:
           python-version: '3.12'
       - run: python3 -m unittest discover -s tests/phase0 -v
+      - run: python3 -m pip install -r spikes/NativeSqlite/font-requirements.txt
+      - run: python3 tools/check_probe_fonts.py
   contract-checks:
     runs-on: ubuntu-latest
     steps:
@@ -29,6 +31,8 @@ jobs:
           global-json-file: global.json
       - run: dotnet build src/Scientific.Core/Scientific.Core.csproj --configuration Release
       - run: dotnet build src/Backend/Backend.csproj --configuration Release
+      - run: dotnet build spikes/NativeSqlite/Shared/Shared.csproj --configuration Release
+      - run: dotnet build spikes/NativeSqlite/LinuxHost/LinuxHost.csproj --configuration Release
   portal-scaffold:
     runs-on: ubuntu-latest
     defaults:

@@ -40,3 +40,24 @@ Pass/fail is a human rendering/usability judgment; text-file existence and the w
 Select a maintained Unity-compatible SQLite provider and record version, platform binaries and license. Do not assume desktop `Microsoft.Data.Sqlite` works under IL2CPP. On a Windows IL2CPP build: enable foreign keys; commit snapshot+journal+outbox together; inject an interrupted save; restart and compare all persisted values; verify migrations and a protected sensitive-data provider/key-storage choice. Run with the network disconnected. Keep serialized snapshots and logs using synthetic data. Python SQLite and PostgreSQL spikes do not replace this provider test.
 
 These spikes resolve Phase 0 architecture uncertainties. Full laboratory scenes, models and playable experiments remain Phase 1 work after its gate.
+
+## Executable compatibility diagnostics now prepared
+
+`Assets/Phase0Compatibility/CompatibilityProbeView.cs` provides a dedicated diagnostic screen for the RTL cases above, numeric editing, English/Arabic switching, 100/125/150% scaling, a SQLite probe button and a local environment-record export. It is not attached to the supplier scene and adds no student experiment. The UI and editor setup code remain uncompiled in Unity.
+
+With the pinned licensed editor:
+
+1. Enable **Edit → Project Settings → UI Toolkit → Enable Advanced Text Generator**. This project-wide switch must be verified; setting a style to Advanced alone does not establish it.
+2. Use **Virtual STEM → Phase 0 → Open compatibility probe**. The command asks to preserve modified scenes, then creates a separate diagnostic scene without overwriting an existing one.
+3. Enter Play Mode and inspect all RTL cases and caret/editing behavior. Bundled Tajawal and DejaVu Sans fallback are loaded offline as dynamic font assets. Their source hashes and licenses are in `compatibility-assets.json` and `ThirdParty/Fonts`.
+4. Run SQLite and export the environment record. Outputs go to `Application.persistentDataPath/Phase0Compatibility`, using synthetic data. The environment export explicitly leaves Arabic review and school-hardware approval pending.
+5. Build the IL2CPP diagnostic with `-executeMethod VirtualStem.EditorTools.Phase0CompatibilitySetup.BuildWindowsIl2CppProbe` and `-buildTarget StandaloneWindows64`. This requires Windows IL2CPP build support and its C++ toolchain. The entry point restores the previous scripting backend after the build. Output: `artifacts/unity-compatibility/VirtualStemCompatibility.exe`.
+6. Run the player on the selected Windows machine; collect logs, screenshots and JSON. A successful native SQLite check in this player is not automatically approval of Arabic rendering, abrupt-exit recovery, encryption or performance.
+
+The shared SQLite source also has standalone .NET hosts: [NativeSqlite spike](../../spikes/NativeSqlite/README.md). Twelve assertions passed on Linux native SQLite 3.45.1 and Windows OS SQLite 3.53.4, including separate-process abrupt-exit recovery and Unicode paths. Shared code compiles against .NET Standard 2.1/C# 9. These results reduce interop uncertainty, while Unity/IL2CPP remains unverified.
+
+Font glyph inspection found Tajawal missing U+2082 (`₂`); the bundled DejaVu Sans fallback covers it. `python3 tools/check_probe_fonts.py` passes all eight scientific/Arabic samples, but checks glyph presence only. Its optional tool dependency is pinned in `spikes/NativeSqlite/font-requirements.txt`. This is not a shaping or BiDi test. Font binaries are unmodified; license text is preserved with normalized whitespace. Run `python3 tools/sync_probe_resources.py` whenever the authoritative SQL design changes.
+
+Primary sources: [Unity ATG enablement and dynamic-font limitation](https://docs.unity.com/en-us/engine/6000.3/manual/uitoolkits/uielements/uie-work-with-text/uie-advanced-text-generator/enable-and-use-atg), [Unity fallback chain](https://docs.unity.com/en-us/engine/6000.3/manual/uitoolkits/uielements/uie-work-with-text/uie-fallback-font), [DejaVu license](https://dejavu-fonts.github.io/License.html).
+
+Standard Windows folders and the HKLM/HKCU uninstall registries were checked on 2026-11-01; no registered Unity installation was found. A portable editor elsewhere remains possible. No editor was installed, activated or licensed automatically.
