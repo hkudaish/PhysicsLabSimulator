@@ -1,0 +1,70 @@
+{
+  "success": true,
+  "error": null,
+  "engine": "4.7.2-stable (official)",
+  "platform": "Linux",
+  "displayServer": "headless",
+  "renderer": "gl_compatibility",
+  "exportTemplate": false,
+  "passed": [
+    "shared scientific contract assembly loads",
+    "advanced text shaping available",
+    "bidirectional layout available",
+    "Arabic and scientific glyph coverage with fallback",
+    "Arabic text accepted by shaper",
+    "Arabic visual clusters ordered RTL",
+    "Arabic contextual shaping changes nominal glyphs",
+    "mixed text accepted by shaper",
+    "isolated scientific formula retains LTR visual order",
+    "Arabic logical editing deletes intended character",
+    "content scale 1",
+    "content scale 1.25",
+    "content scale 1.5",
+    "native SQLite probe executes inside Godot C# runtime"
+  ],
+  "observations": {
+    "arabicVisualClusterPositions": [
+      4,
+      3,
+      2,
+      1,
+      0
+    ],
+    "formulaVisualClusterPositions": [
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+    ],
+    "nativeSqlite": {
+      "provider": "libsqlite3.so.0",
+      "sqliteVersion": "3.45.1",
+      "runtime": ".NET 10.0.13",
+      "passed": [
+        "foreign keys enabled",
+        "WAL available",
+        "bound Arabic and quoted JSON roundtrip",
+        "snapshot journal and outbox committed",
+        "cross-profile event rejected",
+        "duplicate event rejected",
+        "ack requires receipt",
+        "failed transaction rolls back all writes",
+        "close reopen preserves full JSON",
+        "database integrity"
+      ],
+      "unityIl2cppVerified": false
+    }
+  },
+  "humanArabicReview": "pending",
+  "schoolHardwareApproved": false,
+  "scope": "Phase 0 Godot compatibility spike; no playable laboratory or scientific implementation."
+}

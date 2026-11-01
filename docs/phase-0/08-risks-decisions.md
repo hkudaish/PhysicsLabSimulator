@@ -4,7 +4,7 @@ All owners below are proposed roles, not assigned people. Review at each phase g
 
 | ID | Risk / unresolved decision | Impact / likelihood | Mitigation and exit evidence | Owner / needed by |
 |---|---|---|---|---|
-| R01 | Unity editor missing; SDK/Node builds and separate-metadata Git now verified | High / actual | Licensed Unity import and empty Windows build; preserve separate Git metadata before artifact cleanup | Engineering / Phase 0 |
+| R01 | Unity unavailable; Godot alternative runtime/export now verified | High / actual | Owner engine selection using concrete preview; preserve separate Git metadata before artifact cleanup | Product/engineering / Phase 0 |
 | R02 | Arabic native text rendering and mixed BiDi unproven | High / high | Bundle reviewed font; test equations, signed values, focus, shaping and input; decide browser with license/cost evidence | UX + engineering / Phase 0 |
 | R03 | Native SQLite works in standalone hosts; Unity IL2CPP and encryption remain unknown | High / medium | Windows/Linux interop and abrupt-exit checks passed; execute prepared Unity diagnostic and choose protected-key/provider policy | Engineering / Phase 0 |
 | R04 | No school hardware baseline | High / actual | Owner supplies or selects actual CPU/GPU/RAM/Windows model; measure empty project before Phase 1 budget | Product + school IT / Phase 0 |
@@ -19,6 +19,7 @@ All owners below are proposed roles, not assigned people. Review at each phase g
 | R13 | LMS scope assumes Moodle includes LRS | Medium / high | Contract integration scope; test against actual LMS/LRS separately | Integrations / Phase 2 |
 | R14 | Sync partial failure loses or duplicates attempts | High / medium | Durable transaction/outbox, ID deduplication, changed-body conflict, restart/partial-ack tests | Backend / Phase 2 |
 | R15 | Unverified supply chain/release/backup | High / medium | Locked dependencies, vulnerability review, content/install signing, key rotation and restore drill | Operations / Phase 4 |
+| R16 | Engine change and later C# web delivery | Medium / actual | Godot Windows spike passed; owner baseline decision pending; browser delivery needs separate design and approval | Product/architecture / Phase 0/5 |
 
 Decisions requiring owner input before Phase 0 acceptance: initial grades/curriculum and scientific lead; target Windows hardware; native UI vs browser based on spike; precise toolchain pins and reproducible Unity import; offline license assumptions; initial institution-only scope and budget; hosting/privacy decision owners. Safe proposals are documented; none is represented as owner-approved.
 

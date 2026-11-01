@@ -2,9 +2,9 @@
 
 **Phase:** 0 — Discovery, requirements and architecture. Date: 2026-11-01.
 
-**Status:** Incomplete / **Blocked at the phase gate**. Tooling, checkpoints and architecture checks have advanced; Unity runtime evidence, scientific review and school hardware selection still prevent acceptance. Phase 1 has not started.
+**Status:** Phase 0 gate pending owner architecture/planning review. **The Godot alternative's technical compatibility spike passed**, including a real standalone Windows export. Unity remains unavailable; it is no longer the only evaluated route. Owner engine-baseline selection, school hardware and human/scientific review remain open. Phase 1 has not started.
 
-**Scope completed:** Six-file audit/preservation; gap/conflict analysis; 57-row RTM; architecture/scientific boundaries; cloud ERD/local SQLite and PostgreSQL isolation spike; 43-path/52-operation API design with 78 schemas; RTL text wireframes; risks/backlog/roadmap; actual selected-toolchain builds; official Unity template source/editor pin; local Git history. Owner confirmed Saudi secondary-school chemistry and introductory DC electricity as the proposed planning baseline. Precise curricular units remain unmapped.
+**Scope completed:** Six-file audit/preservation; gap/conflict analysis; 58-row RTM; architecture/scientific boundaries; cloud ERD/local SQLite and PostgreSQL isolation spike; 43-path/52-operation API design with 78 schemas; RTL text wireframes; risks/backlog/roadmap; actual selected-toolchain builds; official Unity template source/editor pin; local Git history. Owner confirmed Saudi secondary-school chemistry and introductory DC electricity as the proposed planning baseline. Precise curricular units remain unmapped.
 
 **Deliverables produced:** Documents 01–12 and verification record; RTM/manifest; OpenAPI generator/validation; SQLite/PostgreSQL design SQL; analytical fixtures; scientific-interface/backend/portal scaffolds; Unity source/build entry point with supplier provenance/license; checksum-pinned tool bootstrap, development wrapper and smoke tools; draft CI.
 
@@ -22,20 +22,24 @@
 
 **Unfinished requirements:** Licensed Unity import/Windows build; native Arabic shaping/BiDi/input spike; Unity SQLite/IL2CPP/provider/recovery/protection decision; school hardware baseline; scientific reviewer/fixture tolerances; exact curriculum mapping; owner architecture/MVP review. No external approvals or market evidence are fabricated.
 
+**Alternative-engine update:** After authorization to evaluate Godot, the candidate passed 14 Linux headless checks, 16 Windows editor-runtime checks and 17 exported Windows checks, with 10 native SQLite assertions inside each engine runtime. It loads Scientific.Core, uses bundled fonts without system fallback, preserves Arabic/LTR cluster order, edits logical text, renders simple lit 3D geometry and runs from its own exported folder without source/editor mode. The source, captured viewport, licenses and Windows review ZIP are concrete deliverables. This is a compatibility experiment, not either scientific lesson. See [13-godot-evaluation.md](13-godot-evaluation.md).
+
+If the owner selects Godot, replace the Unity/IL2CPP-only requirements above with the evaluated Godot C# Windows path and its remaining human/hardware/data-protection reviews. Do not require a Unity installation to accept a Godot baseline. No engine change or scientific acceptance has been silently approved.
+
 ## Phase 0 acceptance assessment
 
 | Criterion | Evidence | Decision |
 |---|---|---|
-| Requirements reviewed/categorized | Source/conflict audit, 57 rows, proposed Saudi secondary baseline confirmed | Detailed review pending |
-| Architecture documented | Boundaries, trust model, decisions, actual scaffold builds | Unity compatibility spikes pending |
+| Requirements reviewed/categorized | Source/conflict audit, 58 rows, proposed Saudi secondary baseline confirmed | Detailed review pending |
+| Architecture documented | Boundaries, trust model, validated Godot alternative and scaffold builds | Owner engine-revision review pending |
 | Science models defined | Assumptions/units/tolerances/reference cases | Independent scientific review pending |
-| Database architecture | ERD, SQLite tests, two-tenant PostgreSQL spike | Unity provider pending |
+| Database architecture | ERD, SQLite/PG isolation and in-engine Godot native probe | Local-data protection/provider policy review pending |
 | Risks/dependencies identified | R01–R15 and concrete Unity handoff | Documented |
 | MVP scoped | Two Phase 1 experiments; Phase 2 institution workflows | Owner review pending |
-| Reproducible environment/builds | Verified SDK/Node, locks/builds, checkpoint, Unity source pin | Real Unity import/Windows build required |
+| Reproducible environment/builds | SDK/Node, locks, checkpoint and actual Godot Windows export verified | Candidate ready; owner engine-baseline selection pending |
 | Measurable Phase 1 tasks | P1-01–11, reference cases, benchmark protocol | School hardware/reviewer pending |
 
-**Recommended next steps:** Configure licensed Unity and run [import/build/RTL/provider checks](12-unity-validation.md); select representative school PC specifications; assign scientific review and map curriculum units. Then reassess Phase 0 before Phase 1.
+**Recommended next steps:** Review the runnable Godot preview and accept/reject the proposed engine revision; select school PC specifications; assign scientific review and map curriculum units. If Unity is retained instead, its [import/build/RTL/provider checks](12-unity-validation.md) remain required. Reassess Phase 0 before Phase 1.
 
 **Phase acceptance decision required:** Prompt.txt and V2 gates require evidence before progression. The owner's “go ahead” authorized continued Phase 0 work; it does not replace missing evidence. Phase 1 approval follows prerequisites and the gate report.
 

@@ -15,7 +15,9 @@ python3 tools/check_environment.py
 
 The first command checks design artifacts and the SQLite design, not scientific implementations. The second exits unsuccessfully until required development tools are installed. See [development setup](docs/phase-0/10-development.md).
 
-Current evidence: **17 artifact checks, 8 API-contract tests and 8 PostgreSQL assertion groups passed**. Native SQLite diagnostics passed 12 assertions each on Windows and Linux. Scientific-interface/backend builds pass with pinned .NET 10.0.402; the portal builds with pinned Node 24.22.2. Unity Arabic/SQLite diagnostic source is prepared, but editor import and player execution remain unverified. The owner selected Saudi secondary school as the proposed curriculum baseline.
+Current evidence: **19 artifact checks, 8 API-contract tests and 8 PostgreSQL assertion groups passed**. Native SQLite diagnostics passed 12 assertions per standalone host. The Godot alternative passed 17 checks in its actual exported Windows runtime, including Arabic, 3D rendering and in-engine SQLite. Scientific-interface/backend and portal builds pass. Unity remains unverified; Godot is proposed as its replacement after the compatibility evaluation. The owner selected Saudi secondary school as the proposed curriculum baseline.
+
+Try the [Windows Godot diagnostic ZIP](artifacts/godot-spike/VirtualSTEM-Godot-Compatibility-Windows-x64.zip) and read the [engine evaluation](docs/phase-0/13-godot-evaluation.md). This is a Phase 0 diagnostic preview, not a playable laboratory. Its full folder must remain together after extraction.
 
 A local recoverable repository uses separate metadata because the environment protects `.git`. Run `bash tools/git.sh status` or `bash tools/git.sh log --oneline`; preserve `artifacts/source-control.git` before clearing artifacts. No remote is configured.
 

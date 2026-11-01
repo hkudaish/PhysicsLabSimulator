@@ -1,0 +1,16 @@
+<Project Sdk="Godot.NET.Sdk/4.7.2">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <NuGetLockFilePath>$(MSBuildProjectDirectory)/packages.$(Configuration).lock.json</NuGetLockFilePath>
+    <RestoreLockedMode Condition="Exists('$(NuGetLockFilePath)')">true</RestoreLockedMode>
+    <DefineConstants Condition="'$(GodotTargetPlatform)' == 'windows'">$(DefineConstants);STEM_WINDOWS</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Scientific.Core/Scientific.Core.csproj" />
+    <Compile Include="../../src/UnityClient/Assets/Phase0Compatibility/NativeSqliteProbe.cs" Link="Shared/NativeSqliteProbe.cs" />
+  </ItemGroup>
+</Project>

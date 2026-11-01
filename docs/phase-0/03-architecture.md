@@ -51,5 +51,8 @@ Strict global concurrent-seat enforcement is impossible across fully disconnecte
 | ADR-04 | Resistive DC MNA; no SPICE native dependency initially | Scientific reviewer and graph tests |
 | ADR-05 | SQLite local / PostgreSQL cloud | SQLite/PG design tests passed; Unity provider/IL2CPP recovery pending |
 | ADR-06 | Modular monolith; React portals from Phase 2 | Tenant-aware API integration tests |
+| ADR-07 | Proposed Godot 4.7.2 .NET / Compatibility renderer instead of Unity for Windows client | Alternative C#/Arabic/3D/SQLite/export checks passed; owner baseline selection, school hardware and human review pending |
+
+The original Unity diagram/ADRs above remain preserved as the earlier proposal. The evaluated Godot alternative and concrete revision recommendation are in [13-godot-evaluation.md](13-godot-evaluation.md). The architecture change has not been represented as owner-approved; no Phase 1 features have begun.
 
 Version choices were checked against primary sources on 2026-11-01: [Unity LTS support](https://unity.com/releases/unity-6/support), [Unity API compatibility](https://docs.unity.com/en-us/engine/6000.3/manual/programming-environment/overview-of-dot-net-in-unity/dotnet-profile-support), [.NET download](https://dotnet.microsoft.com/en-us/download/dotnet), [Node 24.22.2](https://nodejs.org/en/blog/release/v24.22.2), [React versions](https://react.dev/versions). The selected .NET 10.0.402 and Node 24.22.2 builds now pass using checksum-verified isolated tools. npm-registry queries selected TypeScript 7.0.2, Vite 8.3.5 and React/types 19.3.0. Unity 6000.3.27f2 and the official URP template are pinned; actual editor compatibility is still unverified.

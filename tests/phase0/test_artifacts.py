@@ -14,6 +14,21 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class DesignArtifacts(unittest.TestCase):
+    def test_godot_spike_resources_match_canonical_diagnostics(self):
+        source = ROOT / 'src/UnityClient/Assets/Resources/Phase0'
+        alternative = ROOT / 'spikes/GodotCompatibility/assets'
+        for filename in ('Tajawal-Regular.ttf', 'DejaVuSans.ttf', 'local.sql.txt'):
+            with self.subTest(asset=filename):
+                self.assertEqual((source / filename).read_bytes(), (alternative / filename).read_bytes())
+
+    def test_godot_locks_keep_editor_and_export_dependencies_separate(self):
+        project = ROOT / 'spikes/GodotCompatibility'
+        debug = json.loads((project / 'packages.Debug.lock.json').read_text())['dependencies']['net8.0']
+        exported = json.loads((project / 'packages.ExportRelease.lock.json').read_text())['dependencies']['net8.0']
+        self.assertIn('GodotSharpEditor', debug)
+        self.assertNotIn('GodotSharpEditor', exported)
+        for graph in (debug, exported):
+            self.assertEqual(graph['GodotSharp']['resolved'], '4.7.2')
     def test_compatibility_probe_uses_the_authoritative_schema(self):
         schema = (ROOT / 'specs/data/local.sql').read_bytes()
         self.assertEqual(schema, (ROOT / 'src/UnityClient/Assets/Resources/Phase0/local.sql.txt').read_bytes())

@@ -35,7 +35,7 @@ python3 -m pip --python /tmp/stem-contract-venv/bin/python install -r tests/cont
 /tmp/stem-contract-venv/bin/python -m unittest discover -s tests/contracts -v
 ```
 
-The first suite has 17 checks: original hashes, RTM links, local constraints, analytical/workbook arithmetic, Unity supplier-source consistency and bundled probe assets/licenses/schema. The second has 8 checks, including full OpenAPI validation and rejection of learner grade/tenant/actor fields. These validate contracts, not implemented authentication or business logic. `python3 tools/build_api_contract.py` deterministically regenerates the API design.
+The first suite has 19 checks: original hashes, RTM links, local constraints, analytical/workbook arithmetic, Unity supplier-source consistency, bundled probe assets and Godot resource/lock consistency. The second has 8 checks, including full OpenAPI validation and rejection of learner grade/tenant/actor fields. These validate contracts, not implemented authentication or business logic. `python3 tools/build_api_contract.py` deterministically regenerates the API design.
 
 Standalone native SQLite probes run with `python3 tools/run_native_sqlite_spike.py` and `python3 tools/run_native_sqlite_spike.py --windows`. Each passed 12 assertions, including abrupt-process-exit recovery. The Windows diagnostic deliberately uses installed SDK 8.0.427 in its own scoped project; this does not change the backend SDK selection. The shared source also builds against .NET Standard 2.1. See [NativeSqlite](../../spikes/NativeSqlite/README.md) and [the Unity diagnostic](12-unity-validation.md).
 
@@ -62,3 +62,7 @@ Ordinary Git cannot discover this metadata because protected `.git` prevents a n
 Scientific.Core has no Unity/rendering/network dependency. UnityClient owns assets/presentation; Backend and Portal reserve server/admin modules. Specs/tests are versioned separately. Reject invalid/nonfinite quantities and unsupported models; preserve scientific state on rejection. Never infer measurements from scene color or position.
 
 Draft CI checks artifacts, full API contracts, .NET builds, the locked portal and PostgreSQL isolation. Unity CI awaits licensed editor setup. Later phases add implemented solver, authorization, synchronization, installation and performance tests, signing and dependency/license scans. No remote workflow execution is claimed.
+
+## Evaluated Godot alternative
+
+The owner authorized a Godot compatibility spike after requesting a Unity alternative. Its actual Linux/Windows C# builds, headless text/native checks, rendered 3D viewport and standalone Windows export pass. See [the full evaluation](13-godot-evaluation.md) and [reproduction steps](../../spikes/GodotCompatibility/README.md). `python3 tools/check_environment.py --engine godot` exits 0 for the candidate tools; the default Unity check still fails because that editor is absent. This selects which environment to inspect, not an automatic engine/phase acceptance.

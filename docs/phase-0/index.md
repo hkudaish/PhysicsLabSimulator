@@ -6,7 +6,7 @@ Read [the phase report](11-phase-report.md) first for completion status and outs
 |---|---|
 | Project audit / gap analysis / conflicts | [01-audit.md](01-audit.md) |
 | Business and workbook analysis | [02-business.md](02-business.md) |
-| Requirements traceability, 57 rows | [requirements.csv](requirements.csv) |
+| Requirements traceability, 58 rows | [requirements.csv](requirements.csv) |
 | Architecture and decision log | [03-architecture.md](03-architecture.md) |
 | Scientific models / analytical tests | [04-scientific-models.md](04-scientific-models.md), [fixtures](../../specs/science/reference-cases.json) |
 | Cloud ERD / local storage / sync | [05-data.md](05-data.md), [SQLite DDL](../../specs/data/local.sql) |
@@ -19,3 +19,4 @@ Read [the phase report](11-phase-report.md) first for completion status and outs
 | Original-file preservation | [source-manifest.json](source-manifest.json) |
 | Unity import/build/Arabic/provider handoff | [12-unity-validation.md](12-unity-validation.md) |
 | Native SQLite execution spike | [README](../../spikes/NativeSqlite/README.md), [runner](../../tools/run_native_sqlite_spike.py) |
+| Godot alternative and Windows preview evaluation | [13-godot-evaluation.md](13-godot-evaluation.md), [captured viewport](godot-evidence/windows-exported-ui.png) |

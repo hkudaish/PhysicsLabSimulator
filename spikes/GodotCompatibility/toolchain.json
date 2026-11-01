@@ -1,0 +1,33 @@
+{
+  "version": "4.7.2-stable",
+  "files": [
+    {
+      "artifact": "Windows portable .NET editor",
+      "archive": "stem-godot-4.7.2-mono-win64.zip",
+      "bytes": 116582061,
+      "sha256": "a2a48473a7414c5f19fab690518caebb738c09ef9601f6bd2388676a7f53b3c0",
+      "url": "https://downloads.godotengine.org/?version=4.7.2&flavor=stable&slug=mono_win64.zip&platform=windows.64"
+    },
+    {
+      "artifact": "Linux portable .NET editor",
+      "archive": "stem-godot-4.7.2-mono-linux.zip",
+      "bytes": 107698034,
+      "sha256": "129f82db7bafd54ae14bb5bb284041c73860e8c7a009a3a026ca5e946cbff247",
+      "url": "https://downloads.godotengine.org/?version=4.7.2&flavor=stable&slug=mono_linux_x86_64.zip&platform=linux.64"
+    },
+    {
+      "artifact": "C# export templates",
+      "archive": "stem-godot-4.7.2-mono-templates.tpz",
+      "bytes": 1202598411,
+      "sha256": "92f8681e349ef1f90891b792da95e3b2b0bd1ed610b78018c58feb2d87e15a9d",
+      "url": "https://downloads.godotengine.org/?version=4.7.2&flavor=stable&slug=mono_export_templates.tpz&platform=templates"
+    }
+  ],
+  "checksumOrigin": "Locally computed SHA-256 of downloads via official HTTPS URLs; publisher checksum file was unavailable. Pins ensure repeatability, not an independent publisher-digest verification.",
+  "windowsEditorSignature": {
+    "status": "Valid",
+    "publisher": "Prehensile Tales B.V.",
+    "method": "Get-AuthenticodeSignature on the downloaded Windows editor executable"
+  },
+  "baselineChangeApproved": false
+}
