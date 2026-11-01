@@ -1,0 +1,36 @@
+{
+  "samples": [
+    {
+      "preset": "low-no-msaa",
+      "seconds": 15.0028221,
+      "frames": 2160,
+      "averageFps": 143.97291197652132,
+      "p95FrameMs": 6.936800000000076,
+      "maximumFrameMs": 129.03629999999998,
+      "initialPrivateBytes": 371613696,
+      "finalPrivateBytes": 353923072,
+      "workingSetBytes": 350654464
+    },
+    {
+      "preset": "high-4x-msaa",
+      "seconds": 15.006007,
+      "frames": 2176,
+      "averageFps": 145.0085936250917,
+      "p95FrameMs": 6.937000000000637,
+      "maximumFrameMs": 11.003300000000493,
+      "initialPrivateBytes": 353935360,
+      "finalPrivateBytes": 354099200,
+      "workingSetBytes": 339054592
+    }
+  ],
+  "renderer": "gl_compatibility",
+  "gpu": "NVIDIA GeForce RTX 4060 Ti",
+  "viewport": {
+    "width": 1040,
+    "height": 768
+  },
+  "scene": "three-tool closed DC loop with series ammeter",
+  "schoolHardwareApproved": false,
+  "fullHourAcceptance": false,
+  "scope": "Short development-PC smoke; no leak or school-hardware qualification claim"
+}

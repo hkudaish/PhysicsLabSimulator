@@ -99,7 +99,15 @@ class DesignArtifacts(unittest.TestCase):
             with self.subTest(requirement=row['id']):
                 self.assertTrue(all(row.values()))
                 self.assertTrue((ROOT / row['design_artifact']).is_file())
-                self.assertIn('no product implementation', row['test_status'])
+                self.assertTrue(row['test_status'].strip())
+                if row['current_status'].startswith('Implemented functional prototype'):
+                    self.assertEqual(row['phase'], '1')
+                    self.assertEqual(row['design_artifact'], 'docs/phase-1/report.md')
+                    evidence = json.loads((ROOT/'docs/phase-1/evidence/windows-integration-result.json').read_text())
+                    self.assertTrue(evidence['success'])
+                    self.assertTrue(evidence['exported'])
+                elif row['phase'] in ('2', '3', '4', '5'):
+                    self.assertIn('no product implementation', row['test_status'])
 
     def test_openapi_local_references_and_auth(self):
         doc = json.loads((ROOT / 'specs/api/openapi.json').read_text())

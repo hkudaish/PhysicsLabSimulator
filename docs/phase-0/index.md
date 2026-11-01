@@ -1,6 +1,6 @@
 # Phase 0 review package
 
-Read [the current gate decision](14-gate-decision.md) and [phase report](11-phase-report.md). Phase 0 architecture/scaffolding is complete; the owner authorized the Godot functional prototype. Scientific and target-hardware acceptance remain pending Phase 1 validation.
+Read [the current gate decision](14-gate-decision.md) and [phase report](11-phase-report.md). Phase 0 architecture/scaffolding is complete; the owner authorized the Godot functional prototype. The [functional prototype report](../phase-1/report.md) now records implemented science, interaction, persistence and Windows evidence. Independent science and target-hardware acceptance remain pending.
 
 | Deliverable | Artifact |
 |---|---|

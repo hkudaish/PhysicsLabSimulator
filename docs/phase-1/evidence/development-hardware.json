@@ -1,0 +1,11 @@
+{
+  "cpu": "Intel Core i5-14600KF",
+  "logicalProcessors": 20,
+  "gpu": "NVIDIA GeForce RTX 4060 Ti",
+  "driver": "32.0.16.1088 / OpenGL 610.88",
+  "memoryBytes": 34160291840,
+  "os": "Microsoft Windows 11 Pro",
+  "osVersion": "10.0.26300",
+  "source": "Win32_Processor, Win32_VideoController, Win32_ComputerSystem, Win32_OperatingSystem via CIM on the development host",
+  "approvedSchoolMinimum": false
+}

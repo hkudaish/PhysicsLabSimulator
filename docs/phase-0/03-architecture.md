@@ -1,13 +1,13 @@
-# Software architecture — proposed baseline
+# Software architecture — selected Godot client baseline
 
 ## Boundaries
 
 ```mermaid
 flowchart LR
-  Input[Mouse / keyboard] --> Client[Unity Windows client]
+  Input[Mouse / keyboard] --> Client[Godot .NET Windows client]
   Client --> Core[Pure C# scientific core]
   Core --> State[Versioned immutable state and events]
-  State --> Render[URP visuals / Arabic UI / instruments]
+  State --> Render[Godot Compatibility visuals / Arabic UI / instruments]
   State --> Local[SQLite snapshot + journal]
   Local --> Sync[Phase 2 durable sync adapter]
   Sync --> API[ASP.NET modular monolith]
@@ -51,8 +51,10 @@ Strict global concurrent-seat enforcement is impossible across fully disconnecte
 | ADR-04 | Resistive DC MNA; no SPICE native dependency initially | Scientific reviewer and graph tests |
 | ADR-05 | SQLite local / PostgreSQL cloud | SQLite/PG design tests passed; Unity provider/IL2CPP recovery pending |
 | ADR-06 | Modular monolith; React portals from Phase 2 | Tenant-aware API integration tests |
-| ADR-07 | Proposed Godot 4.7.2 .NET / Compatibility renderer instead of Unity for Windows client | Alternative C#/Arabic/3D/SQLite/export checks passed; owner baseline selection, school hardware and human review pending |
+| ADR-07 | Selected Godot 4.7.2 .NET / Compatibility renderer for Windows client | Actual functional prototype and Windows export verified; school hardware and independent human/scientific review remain |
 
-The original Unity diagram/ADRs above remain preserved as the earlier proposal. Godot is now selected after owner continuation following preview review; see [the gate decision](14-gate-decision.md). Scientific contracts, storage and backend boundaries remain unchanged. Godot Node/Scene adapters replace the Unity presentation/input layer for Phase 1.
+Earlier Unity-specific ADRs remain historical proposals; the diagram now reflects the selected client. Godot is now selected after owner continuation following preview review; see [the gate decision](14-gate-decision.md). Scientific contracts, storage and backend boundaries remain unchanged. Godot Node/Scene adapters replace the Unity presentation/input layer for Phase 1.
 
 Version choices were checked against primary sources on 2026-11-01: [Unity LTS support](https://unity.com/releases/unity-6/support), [Unity API compatibility](https://docs.unity.com/en-us/engine/6000.3/manual/programming-environment/overview-of-dot-net-in-unity/dotnet-profile-support), [.NET download](https://dotnet.microsoft.com/en-us/download/dotnet), [Node 24.22.2](https://nodejs.org/en/blog/release/v24.22.2), [React versions](https://react.dev/versions). The selected .NET 10.0.402 and Node 24.22.2 builds now pass using checksum-verified isolated tools. npm-registry queries selected TypeScript 7.0.2, Vite 8.3.5 and React/types 19.3.0. Unity 6000.3.27f2 and the official URP template are pinned; actual editor compatibility is still unverified.
+
+The implemented Phase 1 adapter is `src/GodotClient`; its reusable models are `src/Scientific.Core` and its anonymous atomic draft store is `src/Lab.Persistence`. The full tenant/student event journal and protected synchronization model described above remain Phase 2 architecture. See [prototype evidence](../phase-1/report.md).

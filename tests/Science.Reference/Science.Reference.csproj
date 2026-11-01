@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RollForward>LatestMajor</RollForward>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../src/GodotClient/SessionModel.cs" Link="SessionModel.cs" />
+    <ProjectReference Include="../../src/Scientific.Core/Scientific.Core.csproj" />
+    <ProjectReference Include="../../src/Lab.Persistence/Lab.Persistence.csproj" />
+  </ItemGroup>
+</Project>

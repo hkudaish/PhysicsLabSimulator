@@ -1,6 +1,6 @@
 # Milestone roadmap and implementation backlog
 
-Durations are source planning ranges, not delivery promises. Staffing, scientific review and school access are unconfirmed. Phase transitions require completed evidence and explicit owner signoff. Current stage: Phase 0 in progress; no Phase 1 implementation.
+Durations are source planning ranges, not delivery promises. Staffing, scientific review and school access are unconfirmed. Phase transitions require completed evidence and explicit owner signoff. Current stage: Phase 0 architecture passed; Godot Phase 1 functional prototype delivered, with independent science review, school-PC qualification and hour-long stability acceptance pending. See [current evidence](../phase-1/report.md). Phase 2 has not started.
 
 | Phase | Scope | Exit evidence | Source duration / funding hypothesis |
 |---|---|---|---|
@@ -11,7 +11,9 @@ Durations are source planning ranges, not delivery promises. Staffing, scientifi
 | 4 | Signed production release, hosting/billing records/support/restore | Institution purchases/activates, deploys, operates and renews with support | Duration TBD; SAR 75k–200k |
 | 5 | Optional science, curricula, platforms, VR/AI | Separately approved business case and validation | Deferred; no budget commitment |
 
-## Remaining Phase 0 tasks
+## Historical Phase 0 planning tasks
+
+These original task definitions are retained for traceability. The [gate decision](14-gate-decision.md) resolves or supersedes the Unity-specific dependencies.
 
 | ID | Task | Dependencies | Acceptance |
 |---|---|---|---|
@@ -23,14 +25,16 @@ Durations are source planning ranges, not delivery promises. Staffing, scientifi
 | P0-06 | Review expanded API baseline | Owner/security review | 52 operations/78 schemas pass full validation; selected Node 24 clean install/build passed; detailed Phase 2 refinements tracked |
 | P0-07 | Owner Phase 0 gate review | P0-01–06 | Accepted architecture/MVP boundaries; reproducible environment; explicit Phase 1 authorization |
 
-## Precise Phase 1 backlog (not started)
+## Phase 1 acceptance backlog
+
+P1-01–06 and P1-09 have implemented prototype evidence. P1-07 needs human Arabic/input review; P1-08 has versioned atomic SQLite workspace snapshots and close/restart evidence (the multi-user submission journal stays Phase 2); P1-10 needs school hardware and the full-hour protocol; P1-11 has a delivery report but external signoffs remain open. Godot Compatibility replaces URP for P1-04.
 
 | ID | Task | Dependency | Measurable acceptance/test |
 |---|---|---|---|
 | P1-01 | Core command/state/units/version framework | Phase 0 pass + approval | Rejected nonfinite/unit/revision commands leave state unchanged; no Unity dependency |
 | P1-02 | Dilution transfer model | P1-01, scientific review | SCI-C01–06 pass including conservation and empty/invalid state |
 | P1-03 | Resistive graph + MNA | P1-01 | SCI-E01–06 pass; KCL residual and reference tolerances met |
-| P1-04 | URP laboratory scene and camera | Approved editor/hardware/assets | Select/place/rotate/zoom with mouse and keyboard; cancel invalid placement; no lost objects in 20 scripted cycles |
+| P1-04 | Godot laboratory scene and camera | Approved editor/hardware/assets | Select/place/rotate/zoom with mouse and keyboard; cancel invalid placement; no lost objects in 20 scripted cycles |
 | P1-05 | Chemistry interaction and readings | P1-02/04 | Student transfers solution/adds water and gets calculated result; reset and undo restore valid state |
 | P1-06 | Wiring and multimeter | P1-03/04 | Student closes/opens loop, changes V/R; probes show calculated signs/units and meaningful fault states |
 | P1-07 | Arabic UI/English strings | P0-03, P1-05/06 | Mixed RTL/LTR human review; full keyboard navigation; no essential color-only cues |
@@ -61,4 +65,4 @@ Proposed benchmark protocol: record CPU/GPU/RAM, Windows/driver, editor/build/co
 | P4-03 | 4 | Commercial contracts/invoices/renewals/payment integration | Approved terms/provider; audited operational records |
 | P5-01 | 5 | Advanced science, SPICE, browser/mobile/VR, curricula, AI | Separate prioritization, scientific/governance review and approval |
 
-Every feature completion requires relevant code, tests, documentation and explicit limitations. No PR, commit, deployment or outreach is claimed here.
+Every feature completion requires relevant code, tests, documentation and explicit limitations. Local recoverable commits exist; no remote PR, deployment or outreach has been performed.

@@ -1,24 +1,30 @@
 # Virtual STEM Laboratory
 
-Phase 0 discovery package, dated 2026-11-01. No simulator is implemented yet.
+The first functional Windows prototype runs two offline experiments: solution dilution and Ohm’s law. It includes calculated instruments, Arabic/English UI, movable equipment, wiring, undo and SQLite save/resume.
 
-Start with [the audit](docs/phase-0/01-audit.md), [architecture](docs/phase-0/03-architecture.md), and [phase report](docs/phase-0/11-phase-report.md).
+Extract [the Windows prototype ZIP](artifacts/phase1/VirtualSTEM-Lab-Phase1-Windows-x64.zip) completely and run **VirtualStemLab.exe**. Keep its PCK and managed data folder together. No Godot editor or .NET installation is required. Read [instructions](docs/phase-1/run-guide.md) and [test results and limitations](docs/phase-1/report.md).
 
-Original files in the project root are preserved. `docs/phase-0/source-manifest.json` records their hashes. Requirements in those files are project evidence; proposed decisions remain subject to owner review.
+Phase 0 architecture passed and the owner authorized this prototype after reviewing the Godot evaluation. Phase 1 acceptance remains open for independent science review, school-PC qualification and the 60-minute stability test. Phase 2 has not started. Saudi secondary school is the proposed curriculum baseline.
 
-Run the checks available without third-party dependencies:
+## Development
 
 ```sh
-python3 -m unittest discover -s tests/phase0 -v
-python3 tools/check_environment.py
+python3 tools/dev.py dotnet run --project tests/Science.Reference/Science.Reference.csproj --configuration Release
+python3 tools/lab.py build
+python3 tools/lab.py import
+python3 tools/lab.py verify
+python3 tools/lab.py export
+python3 tools/lab.py verify --windows --capture --benchmark-seconds 15
+python3 tools/lab.py close-check --windows
+python3 tools/lab.py verify --windows --resume
+python3 tools/lab.py package
+python3 tools/lab.py package-check
 ```
 
-The first command checks design artifacts and the SQLite design, not scientific implementations. The second exits unsuccessfully until required development tools are installed. See [development setup](docs/phase-0/10-development.md).
+The tooling uses portable Godot 4.7.2 .NET, matching Windows templates and SDK 10.0.402 established in [development setup](docs/phase-0/10-development.md) and [engine evaluation](docs/phase-0/13-godot-evaluation.md). `python3 tools/bootstrap_godot_spike.py --offline` reuses the verified local archives. The client targets .NET 10 and exports its runtime; the console harness also supports Windows SDK 8.0.427 from its own directory.
 
-Current evidence: **19 artifact checks, 8 API-contract tests and 8 PostgreSQL assertion groups passed**. Native SQLite diagnostics passed 12 assertions per standalone host. The Godot alternative passed 17 checks in its actual exported Windows runtime, including Arabic, 3D rendering and in-engine SQLite. Scientific-interface/backend and portal builds pass. Unity remains unverified; Godot is proposed as its replacement after the compatibility evaluation. The owner selected Saudi secondary school as the proposed curriculum baseline.
+`src/Scientific.Core` has no renderer dependency; `src/Lab.Persistence` implements atomic native SQLite drafts; `src/GodotClient` is the actual app. Earlier Unity and Godot compatibility spikes remain preserved. Backend and portal directories remain Phase 0 scaffolds.
 
-Try the [Windows Godot diagnostic ZIP](artifacts/godot-spike/VirtualSTEM-Godot-Compatibility-Windows-x64.zip) and read the [engine evaluation](docs/phase-0/13-godot-evaluation.md). This is a Phase 0 diagnostic preview, not a playable laboratory. Its full folder must remain together after extraction.
+Original documents are unchanged; [the manifest](docs/phase-0/source-manifest.json) records their hashes. See [the audit](docs/phase-0/01-audit.md), [architecture](docs/phase-0/03-architecture.md), and [gate decision](docs/phase-0/14-gate-decision.md) for source authority and the engine change.
 
-A local recoverable repository uses separate metadata because the environment protects `.git`. Run `bash tools/git.sh status` or `bash tools/git.sh log --oneline`; preserve `artifacts/source-control.git` before clearing artifacts. No remote is configured.
-
-Phase 1 is not authorized by this package. Phase 0 has outstanding environment and owner decisions; see the report for evidence.
+A recoverable repository uses separate metadata because the environment protects `.git`. Use `bash tools/git.sh status` and `bash tools/git.sh log --oneline`. Preserve `artifacts/source-control.git` and `checkpoints/phase0-source.bundle` before clearing artifacts. No remote is configured.
