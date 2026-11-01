@@ -1,0 +1,34 @@
+name: Phase 0 artifact checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  artifact-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -m unittest discover -s tests/phase0 -v
+  dotnet-scaffolds:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - run: dotnet build src/Scientific.Core/Scientific.Core.csproj --configuration Release
+      - run: dotnet build src/Backend/Backend.csproj --configuration Release
+  portal-scaffold:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/Portal
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run build

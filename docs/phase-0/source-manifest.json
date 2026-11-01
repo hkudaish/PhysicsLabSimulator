@@ -1,0 +1,35 @@
+{
+  "date": "2026-11-01",
+  "files": [
+    {
+      "path": "Prompt.txt",
+      "bytes": 37640,
+      "sha256": "0f09b476fd6dc0bb6c47dc4144624dd676d59522cd000c11c357fc5daed215f7"
+    },
+    {
+      "path": "Simulation_Technical_Project_Original.txt",
+      "bytes": 357713,
+      "sha256": "59f1d0b1e48bf3fddfc7d4d3f85c28f0f9b9fda6a8fc885d1953396485df2417"
+    },
+    {
+      "path": "Virtual_STEM_Lab_BRD_V2.docx",
+      "bytes": 42825,
+      "sha256": "1e5b68d1001e3b13349c42b4f339a1c58db03b1349aa255a85b24160d7309c4d"
+    },
+    {
+      "path": "Virtual_STEM_Lab_PRD_V2.docx",
+      "bytes": 43928,
+      "sha256": "d43026a79e4aad54918a3222a2d90b8f2f4c0e696e21e21c9c82b746ec75aeff"
+    },
+    {
+      "path": "Virtual_STEM_Lab_Technical_Reference_V2.docx",
+      "bytes": 38929,
+      "sha256": "e0341abda94ccdf02c3a52a8dc13a5e0064f4abc6059e4fbb7f13145a449b1cb"
+    },
+    {
+      "path": "Virtual_STEM_Lab_Financial_Model_V2.xlsx",
+      "bytes": 13975,
+      "sha256": "24af0a597655eaae04e7e841d11b040ac47cb3b18bd02dfa34fe5f4504772b48"
+    }
+  ]
+}

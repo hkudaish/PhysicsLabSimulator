@@ -1,0 +1,17 @@
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+**/__pycache__/
+**/Library/
+**/Temp/
+**/Logs/
+**/UserSettings/
+artifacts/
+.env
+.env.*
+!.env.example
+*.user
+*.db
+*.db-wal
+*.db-shm

@@ -1,0 +1,49 @@
+{
+  "status": "Analytical expectations only; no solver implementation tested",
+  "chemistry": [
+    {
+      "id": "SCI-C01",
+      "concentration_mol_L": 1,
+      "aliquot_L": 0.1,
+      "water_L": 0.1,
+      "expected_moles": 0.1,
+      "expected_volume_L": 0.2,
+      "expected_concentration_mol_L": 0.5
+    },
+    {
+      "id": "SCI-C02",
+      "concentration_mol_L": 2,
+      "aliquot_L": 0.025,
+      "water_L": 0.075,
+      "expected_moles": 0.05,
+      "expected_volume_L": 0.1,
+      "expected_concentration_mol_L": 0.5
+    }
+  ],
+  "electricity": [
+    {
+      "id": "SCI-E01",
+      "voltage_V": 9,
+      "resistance_ohm": 1000,
+      "expected_current_A": 0.009,
+      "expected_power_W": 0.081
+    },
+    {
+      "id": "SCI-E02",
+      "voltage_V": 5,
+      "resistance_ohm": 220,
+      "expected_current_A": 0.022727272727272728,
+      "expected_power_W": 0.11363636363636363
+    }
+  ],
+  "future_cases": [
+    "SCI-C03",
+    "SCI-C04",
+    "SCI-C05",
+    "SCI-C06",
+    "SCI-E03",
+    "SCI-E04",
+    "SCI-E05",
+    "SCI-E06"
+  ]
+}

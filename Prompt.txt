@@ -1,0 +1,1309 @@
+Here is the revised Master Development Prompt V2.0, incorporating the complete Virtual STEM Laboratory project and a mandatory six-phase implementation strategy (Phase 0 through Phase 5).
+
+The key instruction is that the AI development agent must build the application progressively, phase by phase, with working deliverables, verification, and documented acceptance criteria at each stage. It must not attempt to implement the entire platform simultaneously.
+
+# MASTER DEVELOPMENT PROMPT V2.0
+
+## Commercial 3D Virtual STEM Laboratory & Educational Management Platform
+
+### Full Project Implementation — Progressive Phase-by-Phase Development
+
+**Project Name:** Virtual STEM Laboratory Platform
+
+**Project Type:** Commercial Educational Technology (EdTech), 3D Scientific Simulation, Educational Management Platform
+
+**Primary Deployment:** Windows Desktop Application
+
+**Secondary Deployment:** Web-Based Teacher, Institution, and Platform Administration
+
+**Primary Language:** Arabic (RTL)
+
+**Secondary Language:** English (LTR)
+
+**Business Model:** B2B SaaS + Institutional Licensing + Premium Educational Content
+
+**Development Strategy:** Progressive, Phase-Gated, Test-Driven, Architecture-First, Offline-First
+
+**Project Status:** To be determined through the initial source-code and artifact audit.
+
+---
+
+# PART I — PROJECT MISSION AND DEVELOPMENT DIRECTIVE
+
+## 1. Your Role
+
+Act as a multidisciplinary software engineering team with expertise in:
+
+- Enterprise Software Architecture
+- Unity 3D and C# Development
+- Scientific Computing and Numerical Methods
+- Chemistry Simulation
+- Electrical and Electronics Engineering
+- 3D Modeling, Rendering, and Technical Art
+- UI/UX Design and Accessibility
+- Educational Technology and Instructional Design
+- Full-Stack Web Development
+- PostgreSQL and SQLite Database Engineering
+- SaaS Business Architecture and Licensing
+- Software Security and DevOps
+- Automated Testing and Quality Assurance
+- Technical Project Management
+
+Your mission is to design, build, test, and prepare for commercial deployment a scientifically credible, realistic, interactive, and expandable 3D virtual laboratory platform for educational institutions.
+
+The system must support chemistry and electrical experimentation, curriculum-aligned learning, student assessment, teacher management, institutional administration, subscription licensing, and future expansion to additional scientific subjects.
+
+## 2. Critical Development Instruction
+
+**DO NOT ATTEMPT TO BUILD THE ENTIRE APPLICATION IN ONE DEVELOPMENT PASS.**
+
+You must execute the project in six clearly defined phases:
+
+- **Phase 0:** Project Discovery, Requirements Analysis, and Technical Architecture.
+- **Phase 1:** Functional 3D Scientific Simulation Proof of Concept.
+- **Phase 2:** Commercial Minimum Viable Product (MVP).
+- **Phase 3:** Institutional Pilot, Validation, and Optimization.
+- **Phase 4:** Production Deployment and Commercial Launch.
+- **Phase 5:** Platform Expansion and Advanced Capabilities.
+
+Each phase must be independently planned, implemented, tested, documented, and evaluated against explicit acceptance criteria.
+
+**Mandatory execution rule:**
+
+Complete one phase before beginning development work belonging to the next phase.
+
+At the end of each phase:
+
+1. Produce the required deliverables.
+2. Run relevant tests.
+3. Document the results.
+4. Identify missing functionality and defects.
+5. Update the implementation roadmap.
+6. Present a phase completion report.
+7. Request project-owner approval before proceeding to the next phase.
+
+You may identify future architectural requirements during earlier phases, but you must not prematurely implement later-phase features.
+
+If no project-owner response is available, stop at the completed phase rather than silently expanding scope.
+
+The final objective is a complete commercial platform, but development must proceed through controlled, verifiable milestones.
+
+---
+
+# PART II — REFERENCE MATERIALS AND REQUIREMENT AUTHORITY
+
+## 3. Review Existing Project Documents
+
+Before implementation, read and analyze these documents when available:
+
+1. `Simulation Technical Project.txt`
+2. `Virtual_STEM_Lab_BRD.docx`
+3. `Virtual_STEM_Lab_PRD.docx`
+4. `Virtual_STEM_Lab_Financial_Model.xlsx`
+
+Treat these files as the project baseline.
+
+Extract:
+
+- Business requirements.
+- Functional requirements.
+- Technical architecture.
+- Scientific simulation requirements.
+- User roles and permissions.
+- Educational workflows.
+- Commercial subscription structures.
+- Database requirements.
+- Deployment requirements.
+- Security and privacy requirements.
+- Financial assumptions.
+- Explicit exclusions and future features.
+
+Do not presume that code samples in the source files constitute a working application.
+
+Distinguish between:
+
+- Existing implemented functionality.
+- Documented requirements.
+- Illustrative code.
+- Proposed architectural improvements.
+- Missing or unresolved specifications.
+
+Generate a requirements traceability matrix linking each requirement to its implementation phase, dependencies, acceptance criteria, and test coverage.
+
+Where the documents conflict, identify the conflict and propose a resolution before implementing affected components.
+
+---
+
+# PART III — PRODUCT VISION AND FUNCTIONAL SCOPE
+
+## 4. Core Product Architecture
+
+The final platform will consist of seven interconnected modules.
+
+### Module A — Virtual Chemistry Laboratory
+
+Provide a realistic 3D chemistry laboratory where students can:
+
+- Explore chemical elements and properties.
+- Interact with the periodic table.
+- Select chemical substances.
+- Use beakers, flasks, test tubes, measuring cylinders, thermometers, and other approved instruments.
+- Pour and transfer liquids.
+- Mix supported chemicals.
+- Measure temperature, volume, concentration, and pH.
+- Observe scientifically modeled reactions.
+- Receive educational explanations.
+- Complete experiments and assignments.
+
+### Module B — Virtual Electricity and Electronics Laboratory
+
+Enable students to:
+
+- Assemble electrical circuits.
+- Place and connect batteries, resistors, LEDs, switches, and other supported components.
+- Work with breadboards.
+- Connect and disconnect wires.
+- Measure voltage and current.
+- Use virtual multimeters.
+- Observe component operation.
+- Identify open circuits and short circuits.
+- Investigate Ohm's law.
+- Troubleshoot electrical circuits.
+
+### Module C — Scientific Simulation Engine
+
+A reusable computational system responsible for:
+
+- Chemistry calculations.
+- Electrical circuit calculations.
+- Scientific measurements.
+- Simulation state management.
+- Scientific event generation.
+- Validation and error handling.
+- Scientific model versioning.
+
+Scientific calculations must be independent of visual rendering.
+
+### Module D — Student Learning and Assessment
+
+Support:
+
+- Guided experiments.
+- Free exploration.
+- Challenges and missions.
+- Curriculum-aligned assignments.
+- Progress tracking.
+- Assessment rubrics.
+- Scientific feedback.
+- Experiment reports.
+- Gamification and achievements.
+
+### Module E — Teacher and Classroom Management
+
+Provide:
+
+- Class management.
+- Student enrollment.
+- Assignment distribution.
+- Experiment catalog.
+- Deadline management.
+- Student performance monitoring.
+- Assessment review.
+- Reporting and analytics.
+- LMS integration.
+
+### Module F — Institutional and Platform Administration
+
+Provide:
+
+- Educational institution management.
+- Campuses and laboratories.
+- User management.
+- Role-based permissions.
+- Subscription plans.
+- Device and seat licensing.
+- Billing records.
+- Usage analytics.
+- Content access.
+- Technical support tools.
+
+### Module G — Scientific Content Management
+
+Provide a version-controlled system for:
+
+- Creating experiments.
+- Assigning curriculum objectives.
+- Setting scientific conditions.
+- Designing assessment rubrics.
+- Scientific review.
+- Quality assurance.
+- Publishing content.
+- Updating experiments.
+- Retiring outdated content.
+
+---
+
+# PART IV — IMPLEMENTATION ARCHITECTURE
+
+## 5. Recommended Technology Stack
+
+Adopt the following initial stack, subject to Phase 0 validation:
+
+| Component                   | Technology                                           |
+| --------------------------- | ---------------------------------------------------- |
+| Game and 3D Engine          | Unity LTS                                            |
+| Programming Language        | C#                                                   |
+| Rendering                   | Unity URP                                            |
+| Scientific Calculation Core | Modular C# libraries                                 |
+| Circuit Solver              | Modified Nodal Analysis / suitable SPICE integration |
+| 3D Assets                   | Blender and PBR workflows                            |
+| Teacher and Admin Portals   | React + TypeScript                                   |
+| Web UI Styling              | Tailwind CSS                                         |
+| Backend APIs                | ASP.NET Core                                         |
+| Main Database               | PostgreSQL                                           |
+| Offline Database            | SQLite                                               |
+| Asset Storage               | S3-compatible storage                                |
+| Authentication              | OpenID Connect / OAuth 2.0                           |
+| Authorization               | RBAC with tenant isolation                           |
+| Packaging                   | Windows installer                                    |
+| Infrastructure              | Docker and CI/CD                                     |
+| LMS Integration             | LTI 1.3 Advantage, xAPI, optional SCORM              |
+| Future VR                   | OpenXR                                               |
+
+Prefer a modular monolith for the initial backend.
+
+Do not introduce microservices merely for architectural complexity.
+
+Use explicit interfaces between systems.
+
+Maintain a single authoritative scientific calculation layer.
+
+---
+
+# PART V — MANDATORY DEVELOPMENT PHASES
+
+# PHASE 0 — PROJECT DISCOVERY, ANALYSIS AND TECHNICAL ARCHITECTURE
+
+**Planning Duration:** Approximately 3–4 weeks, subject to team capacity and existing project maturity.
+
+**Development Priority:** Critical.
+
+## Objective
+
+Establish a fully documented, technically feasible, scientifically credible, and commercially aligned implementation foundation.
+
+Phase 0 is primarily an architecture and planning stage.
+
+Do not build the complete simulator during Phase 0.
+
+Basic technical spikes and tests are allowed only to resolve important architectural uncertainties.
+
+## Phase 0.1 — Existing Project Audit
+
+Inspect all available materials.
+
+Determine whether any working Unity project, source code, backend application, database, or user interface already exists.
+
+Analyze:
+
+- Source-code structure.
+- Existing implementations.
+- Code quality.
+- Existing scientific models.
+- Dependencies.
+- Duplicated code.
+- Missing functionality.
+- Security risks.
+- Performance assumptions.
+- Existing test coverage.
+
+Produce a gap analysis showing:
+
+`Requirement → Current Status → Identified Gap → Recommended Solution → Implementation Phase`
+
+## Phase 0.2 — Business Requirements Analysis
+
+Analyze the BRD and financial model.
+
+Define:
+
+- Target customers.
+- Commercial product packages.
+- Licensing rules.
+- Institution onboarding.
+- Subscription lifecycle.
+- Customer support responsibilities.
+- Content entitlements.
+- Operational workflows.
+- Required administrative roles.
+
+Maintain clear separation between business requirements and speculative future enhancements.
+
+## Phase 0.3 — Scientific System Architecture
+
+Design the chemistry and electricity engines.
+
+For chemistry, specify:
+
+- Element and substance models.
+- Compound properties.
+- Reaction definitions.
+- Concentration handling.
+- Stoichiometric calculations.
+- Temperature and environmental conditions.
+- Supported experiment boundaries.
+- Measurement tolerances.
+- Scientific validation strategy.
+
+For electricity, specify:
+
+- Circuit graph representation.
+- Electrical components.
+- Connection nodes.
+- Modified Nodal Analysis.
+- Voltage and current calculations.
+- Component power limits.
+- Instrument readings.
+- Fault behavior.
+- Solver verification.
+
+Define how scientific outputs drive the 3D environment.
+
+## Phase 0.4 — Database and API Design
+
+Produce:
+
+- Initial PostgreSQL ERD.
+- SQLite local-storage model.
+- Entity definitions.
+- Relationship constraints.
+- Tenant isolation design.
+- Authentication architecture.
+- API contract specifications.
+- Synchronization strategy.
+- Versioning approach.
+
+Separate offline laboratory operations from cloud administration.
+
+## Phase 0.5 — UX and 3D Interaction Design
+
+Define:
+
+- Laboratory layout.
+- Student interaction flow.
+- Object selection.
+- Drag-and-drop behavior.
+- Camera operation.
+- Tool placement.
+- Measurement interfaces.
+- Arabic RTL layouts.
+- Scientific notation handling.
+- Teacher portal wireframes.
+
+Create representative visual mockups or wireframes.
+
+## Phase 0.6 — Development Setup
+
+Establish:
+
+- Source repository.
+- Folder conventions.
+- Unity development project.
+- Backend and frontend project scaffolds.
+- Dependency management.
+- Build pipeline.
+- Test configuration.
+- Coding standards.
+- Version-control branching strategy.
+
+## Phase 0 Deliverables
+
+Produce:
+
+1. Project Audit Report.
+2. Requirements Traceability Matrix.
+3. Software Architecture Document.
+4. Scientific Engine Architecture Specification.
+5. Database ERD.
+6. API Contracts.
+7. UI/UX Design Specifications.
+8. Technical Risk Register.
+9. Development Backlog.
+10. Milestone Roadmap.
+11. Initial Repository and Development Environment.
+
+## Phase 0 Acceptance Criteria
+
+Phase 0 passes only when:
+
+- Requirements have been reviewed and categorized.
+- Technical architecture is documented.
+- Chemistry and electricity simulation models are defined.
+- Database architecture is established.
+- Major dependencies and risks are identified.
+- The initial MVP is clearly scoped.
+- Development environment and build tooling are reproducible.
+- Phase 1 tasks have measurable acceptance tests.
+
+**STOP HERE AFTER COMPLETION AND REQUEST APPROVAL TO START PHASE 1.**
+
+---
+
+# PHASE 1 — FUNCTIONAL 3D SCIENTIFIC SIMULATION PROOF OF CONCEPT
+
+**Planning Duration:** Approximately 4–6 weeks.
+
+**Development Priority:** Critical.
+
+## Objective
+
+Build the first genuinely functional Windows 3D laboratory application.
+
+This phase must prove that:
+
+1. Students can interact naturally with virtual laboratory equipment.
+2. Scientific engines produce correct results.
+3. Scientific results control the visual environment.
+4. The application can store and restore experiment state.
+5. The application performs reliably on representative Windows school computers.
+
+**Phase 1 must deliver executable software, not just design documentation.**
+
+## Phase 1.1 — Create the 3D Laboratory
+
+Build a realistic laboratory scene with:
+
+- Laboratory table.
+- Camera controller.
+- Lighting.
+- Basic environmental assets.
+- Glassware.
+- Chemistry instruments.
+- Electrical workbench.
+- Interactive equipment library.
+
+Implement:
+
+- Object selection.
+- Dragging and placement.
+- Rotation.
+- Zooming and inspection.
+- Object interaction.
+- Reset and undo for supported actions.
+
+Use modular, reusable interaction interfaces.
+
+Keep the desktop input system extensible for future VR support without implementing VR now.
+
+## Phase 1.2 — Implement the Initial Chemistry Experiment
+
+Create one complete chemistry experiment, preferably **solution dilution and concentration measurement**, using scientifically validated calculations.
+
+A student must be able to:
+
+1. Select a solution.
+2. Select appropriate laboratory glassware.
+3. Measure or specify a quantity.
+4. Transfer liquid into a container.
+5. Add a supported quantity of water.
+6. Observe the resulting change in concentration.
+7. Read the calculated values.
+8. Receive educational feedback.
+9. Save or reset the experiment.
+
+Use the underlying scientific model to calculate concentration.
+
+Visual behavior must follow the calculated state.
+
+Create reference tests with known analytical solutions.
+
+The experiment must not rely on a hardcoded final success animation.
+
+## Phase 1.3 — Implement the Initial Electrical Experiment
+
+Create an interactive experiment demonstrating **Ohm's law with a resistor and DC power source**.
+
+A student must be able to:
+
+1. Place a power source.
+2. Place a resistor.
+3. Connect components with wires.
+4. Complete a valid circuit.
+5. Apply a supported voltage.
+6. Observe calculated current.
+7. Use a virtual multimeter.
+8. Change the resistance.
+9. Observe the updated current.
+10. Disconnect the circuit and observe the result.
+
+Use a validated circuit solver.
+
+For a basic resistive example, results should agree with:
+
+`I = V / R`
+
+Handle open circuits, invalid configurations, and short-circuit conditions appropriately.
+
+## Phase 1.4 — Scientific-to-Visual Integration
+
+Implement a clearly defined event workflow:
+
+`User Interaction → Scientific Solver → State Update → Visual Renderer → Measurement Display`
+
+The system must respond consistently to changes in:
+
+- Quantity.
+- Concentration.
+- Voltage.
+- Resistance.
+- Connection state.
+- Instrument positioning.
+
+Visual updates must not alter calculation accuracy.
+
+## Phase 1.5 — Arabic Laboratory Interface
+
+Create an initial Arabic RTL interface with:
+
+- Experiment selection.
+- Equipment library.
+- Inspector panel.
+- Measurement displays.
+- Tooltips.
+- Reset.
+- Save.
+- Resume.
+- Help and instructions.
+
+Support correct LTR rendering for scientific equations, symbols, and units.
+
+## Phase 1.6 — Local Data Storage
+
+Use SQLite or an appropriate local persistence layer to save:
+
+- Experiment identification.
+- Experiment version.
+- Selected tools and components.
+- Simulation state.
+- Measurement results.
+- Experiment progress.
+- Relevant action history.
+
+Allow the student to close and reopen the application without losing a saved experiment.
+
+## Phase 1.7 — Rendering and Performance
+
+Provide initial quality presets.
+
+Validate on representative school computers.
+
+Target:
+
+- Stable 30 FPS or better on the approved minimum hardware.
+- Reliable 60-minute sessions.
+- Consistent scientific results across graphics presets.
+- No critical memory leaks.
+- Reliable experiment save and reload.
+
+Measure actual results and document hardware specifications.
+
+## Phase 1 Deliverables
+
+1. Executable Windows laboratory prototype.
+2. Interactive 3D environment.
+3. Working chemistry experiment.
+4. Working electrical experiment.
+5. Scientific calculation modules.
+6. Functional laboratory instruments.
+7. Arabic RTL interface.
+8. Local experiment persistence.
+9. Automated scientific reference tests.
+10. Performance benchmark report.
+11. Demonstration and installation instructions.
+
+## Phase 1 Acceptance Criteria
+
+Phase 1 passes only when:
+
+- Both experiments are playable and complete.
+- Scientific outputs match documented reference calculations.
+- Instruments show calculated measurements.
+- Visual behavior responds to scientific results.
+- Objects can be manipulated reliably.
+- Experiments can be saved and restored.
+- The Windows build starts on target hardware.
+- Critical tests pass.
+- No blocking defects remain.
+
+**STOP HERE AFTER COMPLETION AND REQUEST APPROVAL TO START PHASE 2.**
+
+---
+
+# PHASE 2 — COMMERCIAL MINIMUM VIABLE PRODUCT
+
+**Planning Duration:** Approximately 10–16 weeks, depending on staffing and approved scope.
+
+## Objective
+
+Transform the Phase 1 prototype into a school-ready educational software product.
+
+## Phase 2.1 — Expand Chemistry
+
+Implement the approved initial curriculum library:
+
+- pH measurement.
+- Acid-base neutralization.
+- Solution dilution.
+- Solution concentration.
+- Reaction rate demonstrations.
+- Heat transfer and temperature.
+- Indicator color changes.
+
+Every experiment must have scientific verification and a defined learning objective.
+
+## Phase 2.2 — Expand Electricity
+
+Implement:
+
+- Ohm's law.
+- Series circuits.
+- Parallel circuits.
+- Voltage measurement.
+- Current measurement.
+- LED circuits.
+- Basic circuit troubleshooting.
+
+Ensure consistent solver results and reusable component definitions.
+
+## Phase 2.3 — Student Accounts and Progress
+
+Implement:
+
+- Student authentication.
+- Learning profiles.
+- Experiment history.
+- Saved experiments.
+- Assignment progress.
+- Assessment results.
+- Badges and achievements.
+- Personal performance summaries.
+
+Do not allow students to modify trusted grades through locally editable data.
+
+## Phase 2.4 — Teacher Portal
+
+Build a responsive React-based teacher portal.
+
+Support:
+
+- Class creation.
+- Student enrollment.
+- Experiment browsing.
+- Assignment creation.
+- Deadlines.
+- Learning objectives.
+- Assessment review.
+- Class analytics.
+- Student progress reports.
+
+## Phase 2.5 — Institutional Administration
+
+Implement:
+
+- Institutional accounts.
+- Campus management.
+- Laboratories.
+- User roles.
+- Permissions.
+- Device registration.
+- License utilization.
+- Reports.
+
+## Phase 2.6 — Subscription and Licensing Engine
+
+Create a database-driven commercial licensing system.
+
+Support illustrative plans:
+
+- School Starter.
+- School Professional.
+- School Enterprise.
+- School Group.
+- Student Home, when enabled.
+
+Implement:
+
+- Subscription records.
+- Entitlements.
+- Concurrent seat limits.
+- License activation.
+- Offline grace periods.
+- Renewal management.
+- License audit logs.
+
+Make pricing and licensing rules configurable through authorized administration.
+
+## Phase 2.7 — Offline Synchronization
+
+Implement:
+
+- SQLite event journal.
+- Synchronization queue.
+- Idempotent event submission.
+- Retry and recovery.
+- Conflict handling.
+- Version checking.
+- Student data protection.
+
+Never silently discard saved results.
+
+## Phase 2.8 — Educational Assessment
+
+Implement:
+
+- Guided lessons.
+- Challenges.
+- Experiment rubrics.
+- Automated grading.
+- Contextual feedback.
+- Student reports.
+- Versioned assessment rules.
+
+## Phase 2.9 — Scientific Content Management
+
+Build a controlled experiment-publishing workflow:
+
+`Draft → Scientific Review → Instructional Review → QA → Approved → Published`
+
+Support immutable published versions and safe rollback.
+
+## Phase 2 Deliverables
+
+- Commercial Windows laboratory MVP.
+- Expanded experiment library.
+- Student learning system.
+- Teacher portal.
+- Institution portal.
+- Backend APIs.
+- PostgreSQL database.
+- Subscription and licensing.
+- Offline synchronization.
+- Assessment engine.
+- Content management.
+- Installation package.
+- Automated test suite.
+
+## Phase 2 Acceptance Criteria
+
+A school must be able to:
+
+1. Activate a valid license.
+2. Install the laboratory application.
+3. Register teachers and students.
+4. Create a class.
+5. Assign a science experiment.
+6. Complete an experiment offline.
+7. Synchronize learning results.
+8. Review student performance.
+9. Export meaningful reports.
+10. Manage seats and user access.
+
+**STOP HERE AFTER COMPLETION AND REQUEST APPROVAL TO START PHASE 3.**
+
+---
+
+# PHASE 3 — INSTITUTIONAL PILOT, TESTING AND OPTIMIZATION
+
+**Planning Duration:** Approximately 6–8 weeks.
+
+## Objective
+
+Validate the application in actual educational environments before full commercial launch.
+
+## Phase 3 Activities
+
+1. Deploy the product in selected pilot schools.
+2. Test representative computer hardware.
+3. Validate classroom workflows.
+4. Confirm scientific calculation accuracy.
+5. Evaluate teacher usability.
+6. Evaluate student interaction and comprehension.
+7. Measure learning outcomes.
+8. Test offline operation and synchronization.
+9. Review privacy and access controls.
+10. Collect defects and enhancement requests.
+11. Optimize rendering and loading.
+12. Test institution onboarding and license activation.
+13. Validate support procedures.
+
+Use defined pilot metrics:
+
+- Experiment completion rate.
+- Teacher activation rate.
+- Student learning improvement.
+- Application stability.
+- Support request frequency.
+- Synchronization success.
+- Institutional willingness to purchase.
+
+Do not present unverified pilot results as measured outcomes.
+
+## Phase 3 Deliverables
+
+- Pilot deployment report.
+- Scientific validation report.
+- Usability findings.
+- Performance benchmarks.
+- Security testing report.
+- Defect resolution log.
+- Educational outcomes evaluation.
+- Updated product roadmap.
+- Release candidate.
+
+## Phase 3 Acceptance Criteria
+
+Proceed to Phase 4 only when critical defects are resolved, scientific validation is satisfactory, core classroom workflows are reliable, and the product demonstrates sufficient educational and operational value.
+
+**STOP HERE AFTER COMPLETION AND REQUEST APPROVAL TO START PHASE 4.**
+
+---
+
+# PHASE 4 — PRODUCTION DEPLOYMENT AND COMMERCIAL LAUNCH
+
+## Objective
+
+Make the platform operationally ready for paying educational institutions.
+
+## Phase 4 Activities
+
+Implement and finalize:
+
+- Production hosting.
+- Environment configuration.
+- Signed Windows installer.
+- Managed deployment options.
+- License activation infrastructure.
+- Subscription operations.
+- Billing and invoicing records.
+- Customer onboarding.
+- Administrative support tools.
+- Usage analytics.
+- Monitoring and alerting.
+- Secure backups.
+- Disaster recovery procedures.
+- Technical documentation.
+- User manuals.
+- Release management.
+- Support and maintenance policies.
+
+Integrate supported payment providers only after the business and compliance requirements are approved.
+
+Prepare:
+
+- Commercial product descriptions.
+- Plan comparisons.
+- Trial or demonstration experience.
+- Subscription terms.
+- Institutional onboarding procedures.
+- Support agreements.
+- License renewal procedures.
+
+## Phase 4 Deliverables
+
+- Production Windows release.
+- Production backend.
+- Hosted administration portals.
+- Commercial licensing system.
+- Operational monitoring.
+- Backup and recovery procedures.
+- Installation manuals.
+- Customer onboarding materials.
+- Technical support procedures.
+- Commercial launch checklist.
+
+## Phase 4 Acceptance Criteria
+
+The platform must support an institution purchasing or activating a plan, onboarding users, deploying the laboratory, conducting lessons, monitoring learning, and receiving operational support.
+
+**STOP HERE AFTER COMPLETION AND REQUEST APPROVAL TO START PHASE 5.**
+
+---
+
+# PHASE 5 — PLATFORM EXPANSION AND ADVANCED CAPABILITIES
+
+## Objective
+
+Expand the platform only after the initial product has demonstrated technical stability and commercial demand.
+
+Potential expansion modules include:
+
+### Advanced Chemistry
+
+- Additional reaction types.
+- More complex analytical experiments.
+- Advanced instruments.
+- Expanded chemical substance catalog.
+
+### Advanced Electronics
+
+- Semiconductor components.
+- Transistors.
+- Operational amplifiers.
+- Oscilloscopes.
+- Signal analysis.
+- More complex SPICE-based simulations.
+
+### New STEM Subjects
+
+- Physics.
+- Mechanics.
+- Optics.
+- Thermodynamics.
+- Biology where scientifically feasible.
+- Technical and vocational training.
+
+### Delivery Platforms
+
+- Browser-based learning.
+- Additional desktop operating systems.
+- Suitable mobile experiences.
+- VR using OpenXR.
+
+### Advanced Education Services
+
+- Additional national curricula.
+- Expanded LMS integrations.
+- Institution-level reporting.
+- Advanced learning analytics.
+- Institution-specific content packages.
+- Carefully governed AI-based tutoring.
+
+Do not implement these features unless separately prioritized and approved.
+
+---
+
+# PART VI — SCIENTIFIC VALIDATION AND QUALITY CONTROL
+
+## 6. Mandatory Scientific Integrity
+
+Scientific correctness is non-negotiable.
+
+For every scientific model:
+
+1. Define the governing laws and equations.
+2. Define supported conditions and assumptions.
+3. Define measurement units.
+4. Define precision and tolerances.
+5. Identify limitations.
+6. Create reference test cases.
+7. Compare results against accepted scientific calculations.
+8. Document the model version.
+
+Unsupported interactions must not produce fabricated scientific results.
+
+Visual realism must never override calculation accuracy.
+
+## 7. Automated Testing
+
+Implement tests appropriate to each phase:
+
+- Scientific unit tests.
+- Integration tests.
+- User interface tests.
+- Database migration tests.
+- Authorization tests.
+- Offline synchronization tests.
+- Persistence tests.
+- Performance benchmarks.
+- Installation tests.
+- Regression tests.
+
+Maintain a repeatable automated test environment.
+
+---
+
+# PART VII — SECURITY, DATA PRIVACY AND RELIABILITY
+
+## 8. Security Requirements
+
+Implement:
+
+- Secure authentication.
+- Role-based authorization.
+- Tenant isolation.
+- Encrypted network communication.
+- Appropriate local data protection.
+- Secure credential handling.
+- Signed release packages.
+- Signed content updates.
+- Audit logging.
+- Input validation.
+- Backup and recovery.
+- Dependency vulnerability scanning.
+- Least-privilege access.
+
+Design data processing and retention policies appropriate for educational institutions and applicable Saudi privacy requirements.
+
+Student records must never be accessible across unauthorized institutions.
+
+## 9. Offline-First Requirements
+
+The laboratory must remain usable during temporary internet outages for locally authorized content.
+
+Store experiment state locally and synchronize when connectivity is restored.
+
+Support:
+
+- Reliable save and resume.
+- Duplicate-event prevention.
+- Safe synchronization retries.
+- Clear offline indicators.
+- Recovery from interrupted synchronization.
+- Configurable licensing grace periods.
+
+---
+
+# PART VIII — USER EXPERIENCE AND PERFORMANCE
+
+## 10. Interface Requirements
+
+Build an Arabic-first system.
+
+Support:
+
+- Proper RTL layouts.
+- Arabic scientific terminology.
+- English localization.
+- Correct chemical formulas.
+- Correct mathematical expressions.
+- Readable measurement values.
+- Accessible controls.
+- Consistent navigation.
+- Clear errors and contextual guidance.
+
+Avoid unnecessary UI complexity.
+
+The laboratory should visually resemble a professional educational scientific environment.
+
+## 11. Rendering and Performance
+
+Optimize for Windows school laboratory hardware.
+
+Provide adaptive graphics presets.
+
+Target:
+
+- At least 30 FPS on the validated minimum configuration.
+- Scientifically consistent results regardless of visual quality settings.
+- Reliable hour-long laboratory sessions.
+- Fast experiment loading within approved performance budgets.
+- Stable memory usage.
+- Reliable local persistence.
+
+Benchmark all performance claims.
+
+---
+
+# PART IX — BUSINESS MODEL AND COMMERCIAL OPERATIONS
+
+## 12. Commercial Model
+
+Implement the platform around:
+
+**B2B Institutional SaaS + Annual Laboratory Licensing + Premium Educational Content.**
+
+Design commercial entities for:
+
+- Subscription plans.
+- Institution subscriptions.
+- Concurrent seats.
+- Content entitlements.
+- Devices.
+- Invoices.
+- Renewals.
+- Commercial analytics.
+
+Illustrative pricing assumptions:
+
+| Plan            | Annual Price |
+| --------------- | ------------ |
+| Starter         | SAR 3,500    |
+| Professional    | SAR 8,500    |
+| Enterprise      | SAR 18,000   |
+| School Group    | Custom       |
+| Individual Home | SAR 149–249  |
+
+These are preliminary assumptions only.
+
+All pricing must be configurable.
+
+Separate planned revenue, contracted revenue, collected payments, and recognized revenue.
+
+Do not hardcode financial assumptions into the scientific application.
+
+---
+
+# PART X — SAFE EXECUTION AND CHANGE MANAGEMENT
+
+## 13. Mandatory Safe Execution Workflow
+
+For every implementation task, follow:
+
+**Inspect → Analyze → Plan → Preserve → Implement → Test → Review → Document → Report**
+
+### Inspect
+
+Understand the affected code and dependencies.
+
+### Analyze
+
+Identify risks, constraints, and design implications.
+
+### Plan
+
+Define the smallest safe implementation increment.
+
+### Preserve
+
+Commit working code and create recoverable checkpoints before major changes.
+
+### Implement
+
+Use modular, maintainable code and explicit contracts.
+
+### Test
+
+Run relevant automated and manual verification.
+
+### Review
+
+Compare the behavior to acceptance criteria.
+
+### Document
+
+Update specifications and operational guidance.
+
+### Report
+
+Clearly distinguish completed work, incomplete work, and blockers.
+
+Never report mockups or untested code as production-ready features.
+
+---
+
+# PART XI — PHASE REPORTING AND OWNER APPROVAL
+
+## 14. Mandatory Completion Report
+
+At the end of every phase, provide a report with the following structure:
+
+### Phase Completion Report
+
+**Phase:**\
+**Status:** Passed / Conditionally Passed / Failed / Blocked\
+**Scope Completed:**\
+**Deliverables Produced:**\
+**Files Created or Modified:**\
+**Scientific Tests:**\
+**Integration Tests:**\
+**Performance Results:**\
+**Security Results:**\
+**Known Defects:**\
+**Unfinished Requirements:**\
+**Risks and Dependencies:**\
+**Recommended Next Steps:**\
+**Phase Acceptance Decision Required:**
+
+Do not mark a phase as Passed unless the requirements and test evidence support that conclusion.
+
+If external dependencies prevent completion, report them explicitly.
+
+Do not conceal failures or substitute placeholder functionality.
+
+---
+
+# PART XII — INITIAL EXECUTION COMMAND
+
+## 15. START THE PROJECT
+
+Begin execution with **Phase 0 only**.
+
+Do the following in order:
+
+1. Read and analyze all available source documents and project files.
+2. Inspect any existing application repository.
+3. Identify what is genuinely implemented and what is only documented.
+4. Produce a detailed gap analysis.
+5. Define the complete target architecture.
+6. Establish the scientific simulation design.
+7. Produce the database model and API specifications.
+8. Define the precise Phase 1 scope.
+9. Create the development repository and initial project scaffolding.
+10. Establish automated build and testing infrastructure.
+11. Prepare an implementation backlog covering Phases 0–5.
+12. Produce the Phase 0 completion report.
+
+**IMPORTANT:**
+
+Do not begin Phase 1 until Phase 0 has passed its acceptance checks and the project owner has approved progression.
+
+After approval, implement Phase 1 fully and produce its executable Windows proof of concept.
+
+Then proceed gradually through Phases 2, 3, 4, and 5 using the same phase-gated development process.
+
+Preserve all validated functionality between phases.
+
+Maintain compatibility with existing data and published content whenever feasible.
+
+Avoid unnecessary rewrites.
+
+Prioritize measurable progress, scientific validity, working software, maintainability, and commercial readiness.
+
+---
+
+# FINAL SUCCESS CRITERIA
+
+The project succeeds when it becomes a fully integrated commercial educational platform that provides:
+
+- Scientifically verified virtual laboratory experiments.
+- Realistic and responsive 3D interactions.
+- Reliable Windows offline operation.
+- Curriculum-based teaching and assessment.
+- Teacher and institutional administration.
+- Subscription and licensing management.
+- Secure student data processing.
+- Version-controlled scientific content.
+- Maintainable software architecture.
+- Measurable educational outcomes.
+- Repeatable deployment and support.
+- A sustainable commercial operating model.
+
+**Execute progressively. Complete and verify one phase at a time. Do not skip phases, fabricate completion, or replace real functionality with demonstrations.**
+
+**BEGIN WITH PHASE 0.**
+
+## Recommended execution approach
+
+## Six-phase implementation roadmap
+
+1. Phase 0 — Architecture and Planning
+
+   Requirements, scientific models, database, architecture
+
+   Start here
+2. Phase 1 — Working Windows Prototype
+
+   Interactive chemistry and electrical experiments with verified calculations
+3. Phase 2 — Commercial MVP
+
+   Expanded experiments, teacher portal, institutional accounts, licensing, offline sync
+4. Phase 3 — School Pilot
+
+   Real classroom testing, scientific validation, optimization and feedback
+5. Phase 4 — Commercial Launch
+
+   Production infrastructure, subscriptions, deployment, support, monitoring
+6. Phase 5 — Expansion
+
+   Advanced sciences, browser support, institutional integrations and VR
+
