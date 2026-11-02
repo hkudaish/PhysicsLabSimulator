@@ -1,0 +1,66 @@
+{
+  "samples": [
+    {
+      "experiment": "chemistry",
+      "preset": "low-no-screen-space-effects",
+      "fpsLimit": 60,
+      "seconds": 15.0044403,
+      "frames": 901,
+      "averageFps": 60.048890993954636,
+      "p95FrameMs": 16.68320000000012,
+      "maximumFrameMs": 17.472500000000224,
+      "initialPrivateBytes": 1376014336,
+      "finalPrivateBytes": 1375973376,
+      "workingSetBytes": 719245312
+    },
+    {
+      "experiment": "chemistry",
+      "preset": "realistic-ssao-ssr-4x-msaa",
+      "fpsLimit": 120,
+      "seconds": 15.0014044,
+      "frames": 1801,
+      "averageFps": 120.05542627728907,
+      "p95FrameMs": 8.360800000000168,
+      "maximumFrameMs": 10.330300000000001,
+      "initialPrivateBytes": 1408733184,
+      "finalPrivateBytes": 1408745472,
+      "workingSetBytes": 758923264
+    },
+    {
+      "experiment": "electricity",
+      "preset": "low-no-screen-space-effects",
+      "fpsLimit": 60,
+      "seconds": 15.0098354,
+      "frames": 901,
+      "averageFps": 60.02730716154289,
+      "p95FrameMs": 16.680399999998485,
+      "maximumFrameMs": 16.72500000000099,
+      "initialPrivateBytes": 1409253376,
+      "finalPrivateBytes": 1409376256,
+      "workingSetBytes": 759476224
+    },
+    {
+      "experiment": "electricity",
+      "preset": "realistic-ssao-ssr-4x-msaa",
+      "fpsLimit": 120,
+      "seconds": 15.0016043,
+      "frames": 1801,
+      "averageFps": 120.05382650974202,
+      "p95FrameMs": 8.361900000000144,
+      "maximumFrameMs": 10.122100000000023,
+      "initialPrivateBytes": 1409384448,
+      "finalPrivateBytes": 1409380352,
+      "workingSetBytes": 759701504
+    }
+  ],
+  "renderer": "forward_plus",
+  "gpu": "NVIDIA GeForce RTX 4060 Ti",
+  "viewport": {
+    "width": 1012,
+    "height": 768
+  },
+  "scene": "furnished room; both scientific benches; scripted smooth camera orbit",
+  "schoolHardwareApproved": false,
+  "fullHourAcceptance": false,
+  "scope": "Development-PC visual/performance smoke; no school-hardware or leak qualification"
+}

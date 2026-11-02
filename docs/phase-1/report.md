@@ -1,5 +1,7 @@
 # Phase 1 prototype delivery report
 
+This report preserves the initial 0.1 prototype delivery. See [the visual-upgrade report](visual-upgrade.md) for the current 0.2 build, realistic rendering, graphics fallback and updated measurements.
+
 **Phase:** Functional 3D Scientific Simulation Proof of Concept.
 
 **Status:** Conditionally Passed for development-prototype delivery; Phase 1 acceptance remains open.

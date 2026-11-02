@@ -8,6 +8,7 @@ public partial class LabClient
 {
     private void BuildUi()
     {
+        bench?.Release();
         foreach(Node child in GetChildren()){RemoveChild(child);child.QueueFree();}
         actions.Clear();LayoutDirection=arabic?LayoutDirectionEnum.Rtl:LayoutDirectionEnum.Ltr;
         var background=new ColorRect{Color=new Color(0.035f,0.055f,0.085f),MouseFilter=MouseFilterEnum.Ignore};background.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);AddChild(background);
@@ -22,11 +23,11 @@ public partial class LabClient
         Button(tabs,"chemistry",T("تخفيف المحاليل","Solution dilution"),()=>SwitchExperiment("chemistry"));
         Button(tabs,"electricity",T("قانون أوم","Ohm’s law"),()=>SwitchExperiment("electricity"));
         Button(tabs,"undo",T("تراجع","Undo"),Undo);Button(tabs,"reset",T("إعادة التجربة","Reset experiment"),ResetExperiment);
-        Button(tabs,"camera",T("إعادة الكاميرا","Reset camera"),()=>{Current.CameraYaw=0.1;Current.CameraPitch=0.85;Current.CameraRadius=8.5;bench.UpdateCamera(Current);});
+        Button(tabs,"camera",T("إعادة الكاميرا","Reset camera"),()=>{Current.CameraYaw=0.1;Current.CameraPitch=0.62;Current.CameraRadius=8.5;bench?.UpdateCamera(Current);});
         Button(tabs,"help",T("تعليمات","Help"),Help);
         var quality=new OptionButton{TooltipText=T("جودة الرسم؛ الحسابات العلمية ثابتة.","Rendering quality; scientific calculations stay the same.")};
-        quality.AddItem(T("اقتصادي","Low graphics"));quality.AddItem(T("محسّن","High graphics"));quality.Select(highQuality?1:0);
-        tabs.AddChild(quality);quality.ItemSelected+=index=>SetQuality(index==1);
+        quality.AddItem(T("اقتصادي","Low graphics"));quality.AddItem(T("واقعي","Realistic graphics"));quality.Select(highQuality?1:0);quality.SetItemDisabled(1,RenderingServer.GetCurrentRenderingMethod()!="forward_plus");
+        qualityChoice=quality;tabs.AddChild(quality);quality.ItemSelected+=index=>SetQuality(index==1);
         var layout=new HBoxContainer{SizeFlagsVertical=SizeFlags.ExpandFill};layout.AddThemeConstantOverride("separation",14);main.AddChild(layout);
         var panel=new PanelContainer{CustomMinimumSize=new Vector2(350,0)};layout.AddChild(panel);
         var scroll=new ScrollContainer{CustomMinimumSize=new Vector2(350,0)};panel.AddChild(scroll);

@@ -1,0 +1,5 @@
+{
+  "freshProcessResumeRequired": true,
+  "success": true,
+  "trigger": "WM_CLOSE sent to the process created by this test"
+}

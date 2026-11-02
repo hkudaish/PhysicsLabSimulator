@@ -70,12 +70,29 @@ public partial class LabClient
             Require(MoveTool("sensor",2.8,1.4)&&!readings.Text.Contains("0.500",StringComparison.Ordinal),"probe must be near its target vessel");
             Undo();
             SelectTool("beaker");
+            int meshBuilds=bench.ToolMeshBuildCount;
+            SelectTool("stock");SelectTool("beaker");
+            Require(bench.ToolMeshBuildCount==meshBuilds,"selection retains equipment meshes and physics bodies");
+            var beforeDrag=bench.ToolPosition("beaker");original=Session.Encode(workspace);
+            bench.PreviewPosition("beaker",beforeDrag+Vector3.Right,0.016);
+            Require(bench.ToolPosition("beaker").X>beforeDrag.X&&bench.ToolPosition("beaker").X<beforeDrag.X+1,"drag preview interpolates toward pointer target");
+            Require(Session.Encode(workspace)==original,"drag preview cannot commit scientific or saved placement state");
+            Refresh();
             for(int i=0;i<20;i++){RotateSelected(Mathf.Pi/8);Undo();}
             Require(Current.Tools.Count==4&&Current.Tools.Select(t=>t.Id).Distinct().Count()==4,"twenty manipulation and undo cycles retain equipment");
             actions["language"].EmitSignal(Godot.Button.SignalName.Pressed);
             Require(LayoutDirection==LayoutDirectionEnum.Ltr&&feedback.Text.Contains("Goal achieved",StringComparison.Ordinal),"English interface switches layout and lesson text");
             actions["language"].EmitSignal(Godot.Button.SignalName.Pressed);
             Require(LayoutDirection==LayoutDirectionEnum.Rtl,"Arabic interface restores RTL layout");
+            var cameraPose=bench.Camera.Position;var cameraState=Session.Clone(Current);cameraState.CameraYaw+=0.3;
+            bench.UpdateCamera(cameraState);
+            Require(bench.Camera.Position.IsEqualApprox(cameraPose),"camera input sets a smooth target without snapping");
+            bench.Advance(0.05);Require(!bench.Camera.Position.IsEqualApprox(cameraPose),"camera advances toward orbit target");
+            bench.UpdateCamera(Current,true);
+            original=Session.Encode(workspace);bench.AnimatePour("stock","beaker",false);
+            var animationClock=System.Diagnostics.Stopwatch.StartNew();
+            while(animationClock.Elapsed.TotalSeconds<1.1)await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
+            Require(Session.Encode(workspace)==original,"pour animation cannot change quantities pose or scientific state");
             SwitchExperiment("electricity");
             await ToSignal(GetTree(),SceneTree.SignalName.PhysicsFrame);await ToSignal(GetTree(),SceneTree.SignalName.PhysicsFrame);
             foreach(var tool in Current.Tools)foreach(string port in new[]{".a",".b"})
@@ -107,6 +124,7 @@ public partial class LabClient
             SelectTool("multimeter");Near(electrical!.Branches["multimeter"].CurrentA,0.009,"series ammeter reads solver branch");
             Require(readings.Text.Contains("0.009000",StringComparison.Ordinal),"ammeter measurement display");
             string scienceBefore=Session.Encode(workspace);SetQuality(true);
+            Require(bench.HighQuality==bench.SupportsAdvancedRendering,"realistic profile only enables supported rendering effects");
             Near(Session.Electricity(Current).Branches["resistor"].CurrentA,0.009,"graphics quality cannot alter scientific results");
             Require(scienceBefore==Session.Encode(workspace),"renderer does not mutate scientific state");SetQuality(false);
             Require(await SaveWorkspace(),"save both experiments through SQLite");
@@ -123,8 +141,10 @@ public partial class LabClient
         if(OS.GetCmdlineUserArgs().Contains("--capture"))
         {
             Require(DisplayServer.GetName()!="headless","capture uses real graphics driver");
+            SetQuality(true);
             SwitchExperiment("chemistry");SelectTool("beaker");await Capture("chemistry");
             SwitchExperiment("electricity");SelectTool("multimeter");await Capture("electricity");
+            SetQuality(false);await Capture("electricity-low");SetQuality(true);
         }
         await BenchmarkIfRequested();
         Require(await SaveWorkspace(),"final saved workspace");
@@ -133,12 +153,14 @@ public partial class LabClient
             exported=OS.HasFeature("template"),renderer=RenderingServer.GetCurrentRenderingMethod(),gpu=RenderingServer.GetVideoAdapterName(),
             chemistryConcentration=workspace.Chemistry.Tools.First(t=>t.Id=="beaker").Vessel().ConcentrationMolL,
             currentA=Session.Electricity(workspace.Electricity).Branches["multimeter"].CurrentA,
-            schoolHardwareApproved=false,independentScientificReview="pending",scope="Phase 1 prototype integration checks; no release acceptance claimed"};
+            visualVersion="0.2.0",advancedRenderingSupported=bench.SupportsAdvancedRendering,
+            schoolHardwareApproved=false,independentScientificReview="pending",scope="Phase 1 visual upgrade integration checks; no release acceptance claimed"};
         File.WriteAllText(Path.Combine(ResultsFolder(),resume?"resume-result.json":"integration-result.json"),JsonSerializer.Serialize(report,new JsonSerializerOptions{WriteIndented=true}));
-        GD.Print("Lab integration checks passed: "+verified.Count);GetTree().Quit(0);
+        GD.Print("Lab integration checks passed: "+verified.Count);await FinishAndQuit(0);
     }
     private async Task Capture(string name)
     {
+        bench.SnapCamera();
         await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
         await ToSignal(RenderingServer.Singleton,RenderingServer.SignalName.FramePostDraw);
         var image=viewport.GetTexture().GetImage();var colors=new HashSet<Color>();

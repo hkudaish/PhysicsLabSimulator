@@ -1,0 +1,12 @@
+{
+  "title": "Studio Small 09",
+  "author": "Sergej Majboroda",
+  "source": "https://polyhaven.com/a/studio_small_09",
+  "download": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr",
+  "license": "CC0-1.0",
+  "licenseReference": "https://polyhaven.com/license",
+  "sha256": "e7cfda5f4e98e623db12b8bfd0184e048488e4855d9c83e2751fb44a32e80c45",
+  "bytes": 1615248,
+  "purpose": "Bundled offline environment illumination and reflections",
+  "retrieved": "2026-11-02"
+}

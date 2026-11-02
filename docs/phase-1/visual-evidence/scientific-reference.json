@@ -1,0 +1,5 @@
+{
+  "passed": 452,
+  "platform": "Linux",
+  "scope": "Rebuilt reference harness with current state defaults; science and SQLite libraries unchanged"
+}

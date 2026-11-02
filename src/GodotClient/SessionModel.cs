@@ -37,7 +37,7 @@ namespace VirtualStem.Client
         public List<ToolState> Tools { get; set; } = new();
         public List<WireState> Wires { get; set; } = new();
         public double CameraYaw { get; set; } = 0.1;
-        public double CameraPitch { get; set; } = 0.85;
+        public double CameraPitch { get; set; } = 0.62;
         public double CameraRadius { get; set; } = 8.5;
         public string SelectedId { get; set; } = "";
         public List<string> Actions { get; set; } = new();
@@ -47,7 +47,7 @@ namespace VirtualStem.Client
         public int SchemaVersion { get; set; } = 1;
         public string ChemistryModel { get; set; } = ChemistryState.ModelVersion;
         public string ElectricalModel { get; set; } = ResistiveDc.ModelVersion;
-        public string ClientVersion { get; set; } = "0.1.0";
+        public string ClientVersion { get; set; } = "0.2.0";
         public string ActiveExperiment { get; set; } = "chemistry";
         public SessionData Chemistry { get; set; } = Session.New("chemistry");
         public SessionData Electricity { get; set; } = Session.New("electricity");

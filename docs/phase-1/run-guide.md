@@ -1,5 +1,7 @@
 # Windows prototype instructions
 
+The steps below also apply to the current [visual upgrade](visual-upgrade.md). Its realistic profile adds lighting/reflections; `LowGraphics.bat` starts the lighter OpenGL renderer. The original 0.1 package and measurements are retained separately.
+
 Extract the entire `VirtualSTEM-Lab-Phase1-Windows-x64.zip` archive. Open `VirtualSTEM-Lab/VirtualStemLab.exe` on Windows x64. Keep the executable, PCK, managed data folder and licenses together. No editor, SDK, installer or .NET setup is required. The actual exported app was tested directly, without a source-project path.
 
 The app starts in Arabic; the language button switches to English. Help explains controls and model boundaries. Equipment uses schematic procedural geometry, before production art and classroom usability qualification.

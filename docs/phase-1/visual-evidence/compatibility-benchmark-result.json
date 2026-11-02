@@ -1,0 +1,40 @@
+{
+  "samples": [
+    {
+      "experiment": "chemistry",
+      "preset": "low-no-screen-space-effects",
+      "fpsLimit": 60,
+      "seconds": 15.0032611,
+      "frames": 901,
+      "averageFps": 60.05361021109197,
+      "p95FrameMs": 16.68270000000005,
+      "maximumFrameMs": 17.51749999999941,
+      "initialPrivateBytes": 378642432,
+      "finalPrivateBytes": 375128064,
+      "workingSetBytes": 329084928
+    },
+    {
+      "experiment": "electricity",
+      "preset": "low-no-screen-space-effects",
+      "fpsLimit": 60,
+      "seconds": 15.009819,
+      "frames": 901,
+      "averageFps": 60.02737274846552,
+      "p95FrameMs": 16.68309999999984,
+      "maximumFrameMs": 16.984299999998953,
+      "initialPrivateBytes": 375808000,
+      "finalPrivateBytes": 375709696,
+      "workingSetBytes": 330080256
+    }
+  ],
+  "renderer": "gl_compatibility",
+  "gpu": "NVIDIA GeForce RTX 4060 Ti",
+  "viewport": {
+    "width": 1012,
+    "height": 768
+  },
+  "scene": "furnished room; both scientific benches; scripted smooth camera orbit",
+  "schoolHardwareApproved": false,
+  "fullHourAcceptance": false,
+  "scope": "Development-PC visual/performance smoke; no school-hardware or leak qualification"
+}

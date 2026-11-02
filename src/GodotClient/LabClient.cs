@@ -25,7 +25,7 @@ public partial class LabClient : Control
     private SubViewportContainer benchContainer=null!;
     private Label status=null!,readings=null!,feedback=null!,selectionLabel=null!;
     private VBoxContainer inspector=null!;
-    private OptionButton targetChoice=null!,wireChoice=null!;
+    private OptionButton targetChoice=null!,wireChoice=null!,qualityChoice=null!;
     private readonly List<string> targetIds=new(),wireIds=new();
     private SpinBox amount=null!,componentValue=null!;
     private Button saveButton=null!,resumeButton=null!;
@@ -40,10 +40,11 @@ public partial class LabClient : Control
         try
         {
             GetTree().AutoAcceptQuit=false;
+            highQuality=!OS.GetCmdlineUserArgs().Contains("--low-graphics")&&RenderingServer.GetCurrentRenderingMethod()=="forward_plus";
             font=ResourceLoader.Load<FontFile>("res://assets/Tajawal-Regular.ttf");
             var fallback=ResourceLoader.Load<FontFile>("res://assets/DejaVuSans.ttf");
             font.AllowSystemFallback=false;fallback.AllowSystemFallback=false;font.Fallbacks=new Godot.Collections.Array<Font>{fallback};
-            Theme=new Theme{DefaultFont=font,DefaultFontSize=19};
+            ApplyLabTheme();
             string? testPath=System.Environment.GetEnvironmentVariable("STEM_LAB_TEST_STORAGE");
             if((OS.GetCmdlineUserArgs().Contains("--verify")||OS.GetCmdlineUserArgs().Contains("--resume-check")||OS.GetCmdlineUserArgs().Contains("--close-check"))&&string.IsNullOrWhiteSpace(testPath))
                 throw new InvalidOperationException("Verification requires isolated storage.");
@@ -89,7 +90,11 @@ public partial class LabClient : Control
         UndoStates.Add(before);if(UndoStates.Count>20)UndoStates.RemoveAt(0);Current=candidate;Refresh(rebuild);return true;
     }
     private void SetQuality(bool high)
-    {highQuality=high;viewport.Msaa3D=high?Viewport.Msaa.Msaa4X:Viewport.Msaa.Disabled;}
+    {
+        highQuality=high&&bench.SupportsAdvancedRendering;bench.ApplyQuality(highQuality);
+        Engine.MaxFps=highQuality?120:60;
+        if(qualityChoice!=null)qualityChoice.Select(highQuality?1:0);
+    }
     private void SelectTool(string id)
     {
         if(busy)return;Current.SelectedId=id;Refresh(true);
@@ -140,7 +145,7 @@ public partial class LabClient : Control
         string source=water?Current.Tools.FirstOrDefault(t=>t.Kind=="water"&&t.Moles==0)?.Id??"":Current.SelectedId;
         string target=water?Current.SelectedId:targetChoice.Selected>=0&&targetChoice.Selected<targetIds.Count?targetIds[targetChoice.Selected]:"";
         double volume=amount.Value/1000;
-        Change("Transfer "+N(volume)+" L "+source+" → "+target,data=>
+        bool applied=Change("Transfer "+N(volume)+" L "+source+" → "+target,data=>
         {
             if(!data.Tools.Any(t=>t.Id==source&&Session.Chemical(t.Kind))||!data.Tools.Any(t=>t.Id==target&&Session.Chemical(t.Kind)))
             {Say(T("اختر وعاءً ومصدراً صالحاً أولاً.","Choose a valid vessel and source first."));return false;}
@@ -148,6 +153,7 @@ public partial class LabClient : Control
             if(!result.Applied){Say(ChemistryError(result.Status));return false;}
             Session.ApplyChemistry(data,result.State);data.SelectedId=target;return true;
         },true);
+        if(applied)bench.AnimatePour(source,target,water);
     }
     private string ChemistryError(ChemistryStatus status)=>status switch
     {
@@ -212,6 +218,12 @@ public partial class LabClient : Control
             }
         }
     }
+    public override void _Process(double delta)
+    {
+        if(bench==null)return;
+        bench.Advance(delta);
+        if(dragId!=null)bench.PreviewPosition(dragId,dragPosition,delta);
+    }
     public override void _Input(InputEvent input)
     {
         if(busy)return;
@@ -222,7 +234,7 @@ public partial class LabClient : Control
             if(dragId!=null&&bench.OnTable(benchContainer.GetLocalMousePosition()) is Vector3 point)
             {
                 dragPosition=new Vector3(Mathf.Snapped(point.X,0.1f),0,Mathf.Snapped(point.Z,0.1f));
-                dragValid=Session.CanPlace(Current,dragId,dragPosition.X,dragPosition.Z);bench.PreviewPosition(dragId,dragPosition);
+                dragValid=Session.CanPlace(Current,dragId,dragPosition.X,dragPosition.Z);
                 if(!dragValid)Say(T("موضع غير صالح: ابق داخل المنضدة وبعيداً عن الأدوات الأخرى.","Invalid placement: stay on the bench and avoid other tools."));
             }
         }
@@ -272,7 +284,25 @@ public partial class LabClient : Control
         {
             closing=true;
             while(busy)await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
-            if(await SaveWorkspace())GetTree().Quit();else closing=false;
+            if(await SaveWorkspace())await FinishAndQuit(0);else closing=false;
         }
+    }
+    private async Task FinishAndQuit(int code)
+    {
+        var tree=GetTree();busy=true;
+        bench?.Release();
+        foreach(Node child in GetChildren()){RemoveChild(child);child.QueueFree();}
+        bench=null!;viewport=null!;font=null!;Theme=null;
+        await ToSignal(tree,SceneTree.SignalName.ProcessFrame);
+        await ToSignal(tree,SceneTree.SignalName.ProcessFrame);
+        BenchGeometry.ReleaseCache();
+        // Release managed resource wrappers while the rendering device still exists.
+        // This is a shutdown boundary, never a per-frame garbage collection policy.
+        GC.Collect();GC.WaitForPendingFinalizers();GC.Collect();
+        await ToSignal(tree,SceneTree.SignalName.PhysicsFrame);
+        await ToSignal(tree,SceneTree.SignalName.PhysicsFrame);
+        await ToSignal(tree,SceneTree.SignalName.ProcessFrame);
+        RenderingServer.ForceSync();
+        tree.Quit(code);
     }
 }

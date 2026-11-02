@@ -1,0 +1,17 @@
+{
+  "gpu": {
+    "Name": "NVIDIA GeForce RTX 4060 Ti",
+    "DriverVersion": "32.0.16.1088"
+  },
+  "cpu": {
+    "Name": "Intel(R) Core(TM) i5-14600KF",
+    "NumberOfLogicalProcessors": 20
+  },
+  "memoryBytes": 34160291840,
+  "os": {
+    "Caption": "Microsoft Windows 11 Pro",
+    "Version": "10.0.26300"
+  },
+  "schoolMinimumApproved": false,
+  "recordedDate": "2026-11-02"
+}

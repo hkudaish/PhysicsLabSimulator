@@ -1,0 +1,13 @@
+  Determining projects to restore...
+  Restored /mnt/d/PhysicsLabSimulator/src/Scientific.Core/Scientific.Core.csproj (in 231 ms).
+  Restored /mnt/d/PhysicsLabSimulator/src/Lab.Persistence/Lab.Persistence.csproj (in 231 ms).
+  Restored /mnt/d/PhysicsLabSimulator/src/GodotClient/GodotClient.csproj (in 272 ms).
+  Scientific.Core -> /mnt/d/PhysicsLabSimulator/src/Scientific.Core/bin/Debug/netstandard2.1/Scientific.Core.dll
+  Lab.Persistence -> /mnt/d/PhysicsLabSimulator/src/Lab.Persistence/bin/Debug/netstandard2.1/Lab.Persistence.dll
+  GodotClient -> /mnt/d/PhysicsLabSimulator/src/GodotClient/.godot/mono/temp/bin/Debug/GodotClient.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.36
