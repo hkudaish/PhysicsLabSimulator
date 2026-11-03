@@ -45,9 +45,9 @@ namespace VirtualStem.Client
     public sealed class WorkspaceData
     {
         public int SchemaVersion { get; set; } = 1;
-        public string ChemistryModel { get; set; } = ChemistryState.ModelVersion;
-        public string ElectricalModel { get; set; } = ResistiveDc.ModelVersion;
-        public string ClientVersion { get; set; } = "0.2.0";
+        public string ChemistryModel { get; set; } = SolutionProperties.ModelVersion;
+        public string ElectricalModel { get; set; } = PiecewiseDc.ModelVersion;
+        public string ClientVersion { get; set; } = "0.3.0";
         public string ActiveExperiment { get; set; } = "chemistry";
         public SessionData Chemistry { get; set; } = Session.New("chemistry");
         public SessionData Electricity { get; set; } = Session.New("electricity");
@@ -63,7 +63,7 @@ namespace VirtualStem.Client
             UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
             MaxDepth = 32
         };
-        public static bool Chemical(string kind) => kind == "stock" || kind == "beaker" || kind == "cylinder" || kind == "water";
+        public static bool Chemical(string kind) => ToolCatalog.Fluid(kind);
         public static SessionData New(string experiment)
         {
             if (experiment == "chemistry") return new SessionData
@@ -96,12 +96,28 @@ namespace VirtualStem.Client
         }
         public static CircuitResult Electricity(SessionData data)
         {
-            var terminals=data.Tools.SelectMany(t=>new[]{t.Id+".a",t.Id+".b"}).ToArray();
-            var components=data.Tools.Where(t=>t.Kind=="battery"||t.Kind=="resistor"||(t.Kind=="meter"&&t.Mode=="current"))
-                .Select(t=>new CircuitComponent(t.Id,t.Kind=="battery"?CircuitKind.VoltageSource:t.Kind=="resistor"?CircuitKind.Resistor:CircuitKind.Ammeter,
-                    t.Id+".a",t.Id+".b",t.Kind=="meter"?0:t.Value)).ToArray();
-            string ground=(data.Tools.FirstOrDefault(t=>t.Kind=="battery")?.Id??"missing")+".b";
-            return ResistiveDc.Solve(terminals,components,data.Wires.Select(w=>new CircuitWire(w.A,w.B)),ground);
+            var tools=data.Tools.Where(t=>ToolCatalog.Electrical(t.Kind)).ToArray();
+            var terminals=tools.SelectMany(t=>new[]{t.Id+".a",t.Id+".b"}).ToList();
+            var components=new List<CircuitComponent>();var wires=data.Wires.Select(w=>new CircuitWire(w.A,w.B)).ToList();var junctions=new List<Junction>();
+            foreach(var t in tools)
+            {
+                string a=t.Id+".a",b=t.Id+".b";
+                if(t.Kind=="battery")components.Add(new(t.Id,CircuitKind.VoltageSource,a,b,t.Value));
+                else if(t.Kind is "resistor" or "rheostat" or "bulb")components.Add(new(t.Id,CircuitKind.Resistor,a,b,t.Value,t.Kind=="bulb"?3:0.25));
+                else if(t.Kind=="inductor"||(t.Kind=="switch"&&t.Mode=="closed"))wires.Add(new(a,b));
+                else if(t.Kind=="diode"||t.Kind=="led")junctions.Add(new(t.Id,a,b,t.Value,t.Kind=="led"?10:1,t.Kind=="led"?0.06:1));
+                else if(t.Kind=="ammeter"||(t.Kind=="meter"&&t.Mode=="current"))components.Add(new(t.Id,CircuitKind.Ammeter,a,b,0));
+            }
+            // Open switches/capacitors keep their external terminals for voltage measurements but stamp no conducting branch.
+            string ground=(tools.FirstOrDefault(t=>t.Kind=="battery")?.Id??"missing")+".b";
+            return PiecewiseDc.Solve(terminals,components,wires,ground,junctions);
+        }
+        public static void TrackModels(WorkspaceData data)
+        {
+            bool New(SessionData state)=>state.Tools.Any(t=>t.Kind is not ("stock" or "water" or "beaker" or "cylinder" or "meter" or "battery" or "resistor")||
+                (t.Moles>0&&t.SoluteId!=Dilution.IdealSolute));
+            if(New(data.Chemistry)||data.ChemistryUndo.Any(New))data.ChemistryModel=SolutionProperties.ModelVersion;
+            if(New(data.Electricity)||data.ElectricityUndo.Any(New))data.ElectricalModel=PiecewiseDc.ModelVersion;
         }
         public static SessionData Clone(SessionData data) => JsonSerializer.Deserialize<SessionData>(JsonSerializer.Serialize(data,Options),Options)!;
         public static string Encode(WorkspaceData data) { Validate(data);return JsonSerializer.Serialize(data,Options); }
@@ -113,13 +129,18 @@ namespace VirtualStem.Client
         }
         public static void Validate(WorkspaceData workspace)
         {
-            if(workspace.SchemaVersion!=1||workspace.ChemistryModel!=ChemistryState.ModelVersion||workspace.ElectricalModel!=ResistiveDc.ModelVersion||
+            if(workspace.SchemaVersion!=1||(workspace.ChemistryModel!=ChemistryState.ModelVersion&&workspace.ChemistryModel!=SolutionProperties.ModelVersion)||(workspace.ElectricalModel!=ResistiveDc.ModelVersion&&workspace.ElectricalModel!=PiecewiseDc.ModelVersion)||
                 (workspace.ActiveExperiment!="chemistry"&&workspace.ActiveExperiment!="electricity")||workspace.Chemistry==null||workspace.Electricity==null||
                 workspace.ChemistryUndo==null||workspace.ElectricityUndo==null||workspace.ChemistryUndo.Count>20||workspace.ElectricityUndo.Count>20)
                 throw new InvalidDataException("Unsupported or invalid draft version; current work preserved.");
             ValidateState(workspace.Chemistry,"chemistry");ValidateState(workspace.Electricity,"electricity");
             foreach(var state in workspace.ChemistryUndo)ValidateState(state,"chemistry");
             foreach(var state in workspace.ElectricityUndo)ValidateState(state,"electricity");
+            bool Extended(SessionData state)=>state.Tools.Any(t=>t.Kind is not ("stock" or "water" or "beaker" or "cylinder" or "meter" or "battery" or "resistor")||
+                (t.Moles>0&&t.SoluteId!=Dilution.IdealSolute));
+            if((workspace.ChemistryModel==ChemistryState.ModelVersion&&(Extended(workspace.Chemistry)||workspace.ChemistryUndo.Any(Extended)))||
+                (workspace.ElectricalModel==ResistiveDc.ModelVersion&&(Extended(workspace.Electricity)||workspace.ElectricityUndo.Any(Extended))))
+                throw new InvalidDataException("Extended tools require the newer declared model version.");
         }
         private static void ValidateState(SessionData data,string expected)
         {
@@ -133,16 +154,21 @@ namespace VirtualStem.Client
             {
                 if(tool==null||!ValidId(tool.Id)||!ids.Add(tool.Id)||!Numbers.Finite(tool.X)||!Numbers.Finite(tool.Z)||Math.Abs(tool.X)>3||Math.Abs(tool.Z)>1.5||
                     !Numbers.Finite(tool.Yaw)||!Numbers.Finite(tool.Value)||
-                    (expected=="chemistry"&&!(Chemical(tool.Kind)||tool.Kind=="meter"))||
-                    (expected=="electricity"&&!(tool.Kind=="battery"||tool.Kind=="resistor"||tool.Kind=="meter"))||
+                    (expected=="chemistry"&&!ToolCatalog.Chemistry(tool.Kind))||
+                    (expected=="electricity"&&!ToolCatalog.Circuit(tool.Kind))||
                     (tool.Kind=="battery"&&(tool.Value<0||tool.Value>12))||
-                    (tool.Kind=="resistor"&&(tool.Value<10||tool.Value>10000))||
+                    ((tool.Kind is "resistor" or "rheostat" or "bulb")&&(tool.Value<10||tool.Value>10000))||
+                    (tool.Kind=="switch"&&tool.Mode!="open"&&tool.Mode!="closed")||
+                    (ToolCatalog.Logic(tool.Kind)&&tool.Mode!="00"&&tool.Mode!="01"&&tool.Mode!="10"&&tool.Mode!="11")||
+                    ((tool.Kind is "led" or "diode")&&(tool.Value<0.1||tool.Value>5))||
+                    ((tool.Kind is "capacitor" or "inductor")&&tool.Value<=0)||
+                    (tool.Kind=="element"&&(!Elements.All.Any(e=>e.Symbol==tool.Mode)||tool.Value<=0||tool.Value>1))||
                     (tool.Kind=="meter"&&(expected=="chemistry"?tool.Mode!="concentration":tool.Mode!="voltage"&&tool.Mode!="current")))
                     throw new InvalidDataException("Invalid tool data.");
                 if(Chemical(tool.Kind))
                 {
                     var vessel=tool.Vessel();
-                    if(vessel.Moles>0&&vessel.SoluteId!=Dilution.IdealSolute)throw new InvalidDataException("Unsupported solution.");
+                    if(vessel.Moles>0&&!SolutionProperties.Supports(vessel.SoluteId))throw new InvalidDataException("Unsupported solution.");
                 }
             }
             var wireIds=new HashSet<string>();var pairs=new HashSet<string>();
@@ -155,7 +181,7 @@ namespace VirtualStem.Client
             }
             if(expected=="chemistry"&&data.Wires.Count!=0)throw new InvalidDataException("Unexpected chemistry wiring.");
         }
-        public static bool TerminalExists(SessionData data,string terminal) => data.Tools.Any(t=>terminal==t.Id+".a"||terminal==t.Id+".b");
+        public static bool TerminalExists(SessionData data,string terminal) => data.Tools.Any(t=>ToolCatalog.Electrical(t.Kind)&&(terminal==t.Id+".a"||terminal==t.Id+".b"));
         public static bool ValidId(string id) => !string.IsNullOrWhiteSpace(id)&&id.Length<=64&&id.All(c=>char.IsAsciiLetterOrDigit(c)||c=='-'||c=='_');
         public static bool CanPlace(SessionData data,string id,double x,double z) => Numbers.Finite(x)&&Numbers.Finite(z)&&Math.Abs(x)<=3&&Math.Abs(z)<=1.5&&
             data.Tools.Where(t=>t.Id!=id).All(t=>(t.X-x)*(t.X-x)+(t.Z-z)*(t.Z-z)>=1.15*1.15);

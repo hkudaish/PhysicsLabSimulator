@@ -19,6 +19,7 @@ public partial class LabClient
         Theme.SetStylebox("normal","LineEdit",Card(new Color(0.025f,0.045f,0.06f),new Color(0.16f,0.25f,0.27f),6));
         Theme.SetColor("font_color","LineEdit",text);
         Theme.SetStylebox("panel","PopupMenu",Card(new Color(0.055f,0.095f,0.11f),new Color(0.16f,0.26f,0.29f),8));
+        Theme.SetStylebox("panel","AcceptDialog",Card(new Color(0.055f,0.085f,0.1f),new Color(0.16f,0.26f,0.29f),10,12));
     }
     private static StyleBoxFlat Card(Color color,Color border,int radius,int padding=8)=>new()
     {

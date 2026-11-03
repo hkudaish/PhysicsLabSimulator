@@ -1,0 +1,152 @@
+{
+  "source": "D:/lab-local.zip",
+  "sha256": "81d17f032a77fe7737c7a9aca3ab7cfed3c366ec4a22659f06e88e7d340d68be",
+  "files": [
+    {
+      "path": "lab-local/start.sh",
+      "bytes": 130
+    },
+    {
+      "path": "lab-local/index.html",
+      "bytes": 1115638
+    },
+    {
+      "path": "lab-local/start.bat",
+      "bytes": 142
+    },
+    {
+      "path": "lab-local/README.txt",
+      "bytes": 284
+    }
+  ],
+  "chemistryTools": [
+    {
+      "arabic": "حامل حلقي",
+      "english": "Ring stand"
+    },
+    {
+      "arabic": "سحّاحة",
+      "english": "Buret"
+    },
+    {
+      "arabic": "مخبار مدرّج",
+      "english": "Graduated cylinder"
+    },
+    {
+      "arabic": "مكثّف",
+      "english": "Condenser"
+    },
+    {
+      "arabic": "مقياس حرارة",
+      "english": "Thermometer"
+    },
+    {
+      "arabic": "أنابيب اختبار",
+      "english": "Test tubes"
+    },
+    {
+      "arabic": "دورق فلورنس",
+      "english": "Florence flask"
+    },
+    {
+      "arabic": "دورق مخروطي",
+      "english": "Erlenmeyer flask"
+    },
+    {
+      "arabic": "ماصّة حجمية",
+      "english": "Volumetric pipet"
+    },
+    {
+      "arabic": "كأس زجاجي",
+      "english": "Beaker"
+    },
+    {
+      "arabic": "ماصّة مدرّجة",
+      "english": "Graduated pipet"
+    },
+    {
+      "arabic": "قمع",
+      "english": "Funnel"
+    },
+    {
+      "arabic": "هاون ومدقّة",
+      "english": "Mortar and pestle"
+    },
+    {
+      "arabic": "بوتقة مع غطاء",
+      "english": "Crucible and cover"
+    },
+    {
+      "arabic": "موقد بنزن",
+      "english": "Burner"
+    },
+    {
+      "arabic": "مشبك تثبيت",
+      "english": "Clamp"
+    },
+    {
+      "arabic": "ماسك أنابيب",
+      "english": "Test tube holder"
+    },
+    {
+      "arabic": "ميزان ثلاثي الذراع",
+      "english": "Platform balance (triple beam)"
+    },
+    {
+      "arabic": "ماصّة مطاطية",
+      "english": "Pipet bulb"
+    },
+    {
+      "arabic": "زجاجة ساعة",
+      "english": "Watch glass"
+    },
+    {
+      "arabic": "فرشاة أنابيب",
+      "english": "Test tube brush"
+    },
+    {
+      "arabic": "مغرفة مختبر",
+      "english": "Scoopula"
+    },
+    {
+      "arabic": "سدادات مطاطية",
+      "english": "Rubber stoppers"
+    },
+    {
+      "arabic": "مربع سيراميك",
+      "english": "Ceramic square"
+    },
+    {
+      "arabic": "شبكة سلكية",
+      "english": "Wire gauze"
+    },
+    {
+      "arabic": "مثلث طيني",
+      "english": "Clay triangle"
+    },
+    {
+      "arabic": "ملقط بوتقة",
+      "english": "Crucible tongs"
+    }
+  ],
+  "circuitTypes": [
+    "and",
+    "battery",
+    "bulb",
+    "cap",
+    "diode",
+    "ind",
+    "led",
+    "nand",
+    "nor",
+    "not",
+    "npn",
+    "or",
+    "relay",
+    "resistor",
+    "sig",
+    "switch",
+    "xor"
+  ],
+  "handling": "Inspected as untrusted reference data. No bundled scripts or launch instructions executed. Reimplemented independently; did not copy the bundled Three.js application."
+}

@@ -20,8 +20,8 @@ public partial class LabClient
         saveButton=AsyncButton(header,"save",T("حفظ محلي","Save locally"),async()=>{await SaveWorkspace();});
         resumeButton=AsyncButton(header,"resume",T("استئناف","Resume"),async()=>{await LoadWorkspace();});
         var tabs=new HBoxContainer();main.AddChild(tabs);
-        Button(tabs,"chemistry",T("تخفيف المحاليل","Solution dilution"),()=>SwitchExperiment("chemistry"));
-        Button(tabs,"electricity",T("قانون أوم","Ohm’s law"),()=>SwitchExperiment("electricity"));
+        Button(tabs,"chemistry",T("مختبر الكيمياء","Chemistry lab"),()=>SwitchExperiment("chemistry"));
+        Button(tabs,"electricity",T("مختبر الدارات","Circuit lab"),()=>SwitchExperiment("electricity"));
         Button(tabs,"undo",T("تراجع","Undo"),Undo);Button(tabs,"reset",T("إعادة التجربة","Reset experiment"),ResetExperiment);
         Button(tabs,"camera",T("إعادة الكاميرا","Reset camera"),()=>{Current.CameraYaw=0.1;Current.CameraPitch=0.62;Current.CameraRadius=8.5;bench?.UpdateCamera(Current);});
         Button(tabs,"help",T("تعليمات","Help"),Help);
@@ -48,28 +48,34 @@ public partial class LabClient
     {var button=new Button{Text=text,TooltipText=text,CustomMinimumSize=new Vector2(0,38)};button.Pressed+=async()=>{try{await action();}catch(Exception error){Say(error.Message);}};parent.AddChild(button);actions[id]=button;return button;}
     private Label Text(Container parent,string text,int size=19)
     {var label=new Label{Text=text,AutowrapMode=TextServer.AutowrapMode.WordSmart};label.AddThemeFontSizeOverride("font_size",size);parent.AddChild(label);return label;}
-    private string ToolName(ToolState tool)=>tool.Kind switch
-    {"stock"=>T("محلول قياسي","Stock solution"),"beaker"=>T("كأس ","Beaker ")+Ltr("250 mL"),"cylinder"=>T("مخبار مدرج","Graduated cylinder"),"water"=>T("ماء نقي","Pure water"),"battery"=>T("مصدر DC","DC source"),"resistor"=>T("مقاومة","Resistor"),_=>Chemical?T("مجس التركيز","Concentration probe"):T("ملتيميتر","Multimeter")};
+    private string ToolName(ToolState tool)
+    {
+        if(tool.Kind=="element")return Elements.Find(tool.Mode) is ElementInfo e?(arabic?e.Arabic:e.Name)+" "+Ltr(e.Symbol):tool.Mode;
+        if(tool.Kind=="stock"&&tool.SoluteId!=null&&tool.SoluteId!=Dilution.IdealSolute)return T("محلول ","Solution ")+Ltr(tool.SoluteId);
+        if(tool.Kind=="meter"&&!Chemical)return T("ملتيميتر","Multimeter");
+        var def=ToolCatalog.Find(tool.Kind);return def==null?tool.Kind:arabic?def.Arabic:def.English;
+    }
     private void RebuildInspector()
     {
         foreach(Node child in inspector.GetChildren()){inspector.RemoveChild(child);child.QueueFree();}
         Text(inspector,Chemical?T("الهدف: ","Goal: ")+Ltr("25 mL")+T(" من محلول "," of ")+Ltr("2 mol/L")+T(" ثم "," then ")+Ltr("75 mL")+T(" ماء."," water."):
             T("الهدف: دائرة مغلقة ","Goal: closed loop ")+Ltr("9 V / 1000 Ω")+T(". التيار المتوقع ",". Expected current ")+Ltr("9 mA"),18);
         feedback=Text(inspector,"",17);feedback.AddThemeColorOverride("font_color",new Color(0.35f,0.9f,0.8f));
-        Text(inspector,T("خزانة الأدوات","Equipment"),22);
-        var library=new HFlowContainer();inspector.AddChild(library);
-        foreach(string kind in Chemical?new[]{"beaker","cylinder","stock","water","meter"}:new[]{"battery","resistor","meter"})
-        {string chosen=kind;var dummy=new ToolState{Kind=kind};Button(library,"add-"+kind,ToolName(dummy),()=>AddTool(chosen));}
+        var catalog=new HBoxContainer();inspector.AddChild(catalog);
+        Button(catalog,"equipment",T("خزانة الأدوات +","Equipment +"),OpenEquipment);
+        if(Chemical)Button(catalog,"elements",T("الجدول الدوري","Periodic table"),OpenElements);
+        else Button(catalog,"templates",T("دارات جاهزة","Circuit presets"),OpenCircuitPresets);
         var select=new OptionButton{CustomMinimumSize=new Vector2(0,38)};inspector.AddChild(select);
         for(int i=0;i<Current.Tools.Count;i++){select.AddItem(ToolName(Current.Tools[i])+" "+(i+1));if(Current.Tools[i].Id==Current.SelectedId)select.Select(i);}
         select.ItemSelected+=index=>{if(index>=0&&index<Current.Tools.Count)SelectTool(Current.Tools[(int)index].Id);};
         selectionLabel=Text(inspector,Selected==null?T("اختر أداة من المنضدة.","Select a tool on the bench."):ToolName(Selected),22);
         readings=Text(inspector,"",20);
         var tool=Selected;
-        if(Chemical)
+        BuildExtraControls(tool);
+        if(Chemical&&(tool==null||Session.Chemical(tool.Kind)||tool.Kind=="meter"))
         {
             Text(inspector,T("الكمية المنقولة (mL)","Transfer quantity (mL)"),17);
-            amount=new SpinBox{MinValue=1,MaxValue=250,Step=1,Value=25,CustomMinimumSize=new Vector2(0,38),LayoutDirection=LayoutDirectionEnum.Ltr};inspector.AddChild(amount);
+            amount=new SpinBox{MinValue=0.1,MaxValue=500,Step=0.1,Value=25,CustomMinimumSize=new Vector2(0,38),LayoutDirection=LayoutDirectionEnum.Ltr};inspector.AddChild(amount);
             targetChoice=new OptionButton{CustomMinimumSize=new Vector2(0,38)};targetIds.Clear();inspector.AddChild(targetChoice);
             foreach(var target in Current.Tools.Where(t=>Session.Chemical(t.Kind)&&t.Id!=Current.SelectedId))
             {targetIds.Add(target.Id);targetChoice.AddItem(ToolName(target)+" "+(Current.Tools.IndexOf(target)+1));}
@@ -82,9 +88,9 @@ public partial class LabClient
             });
             Text(inspector,T("لون السائل توضيحي للتركيز. الحجم وكمية المذاب هما أساس الحساب.","Liquid color illustrates concentration. Calculations use volume and solute amount."),15);
         }
-        else
+        else if(!Chemical)
         {
-            if(tool?.Kind=="battery"||tool?.Kind=="resistor")
+            if(tool?.Kind is "battery" or "resistor" or "rheostat" or "bulb")
             {
                 Text(inspector,tool.Kind=="battery"?T("الجهد V","Voltage V"):T("المقاومة Ω","Resistance Ω"),18);
                 componentValue=new SpinBox{MinValue=tool.Kind=="battery"?0:10,MaxValue=tool.Kind=="battery"?12:10000,
@@ -124,6 +130,7 @@ public partial class LabClient
                 readings.Text=target!=null&&LabBench.Distance(tool,target)<=1.65&&target.Vessel().ConcentrationMolL is double c?
                     Ltr(N(c,"0.000")+" mol/L"):T("قرّب المجس من وعاء ممتلئ واختره للقياس.","Move the probe near a filled target and select it for measurement.");
             }
+            else if(tool!=null)readings.Text=ExtraReading(tool);
             else readings.Text="—";
             var goal=Current.Tools.FirstOrDefault(t=>t.Kind=="beaker"&&Math.Abs(t.VolumeL-0.1)<1e-9&&Math.Abs(t.Moles-0.05)<1e-9);
             feedback.Text=goal!=null?T("اكتملت التجربة: ","Goal achieved: ")+Ltr("0.050 mol / 0.100 L = 0.500 mol/L"):
@@ -134,15 +141,16 @@ public partial class LabClient
             readings.Text="—";
             if(electrical?.HasReadings==true&&tool!=null)
             {
-                if(tool.Kind=="meter")
+                if(tool.Kind is "meter" or "voltmeter" or "ammeter")
                 {
-                    if(tool.Mode=="voltage")readings.Text=electrical.VoltageBetween(tool.Id+".a",tool.Id+".b") is double v?Ltr(N(v,"0.000")+" V"):"—";
+                    if(tool.Kind=="voltmeter"||tool.Mode=="voltage")readings.Text=electrical.VoltageBetween(tool.Id+".a",tool.Id+".b") is double v?Ltr(N(v,"0.000")+" V"):"—";
                     else if(electrical.Branches.TryGetValue(tool.Id,out var m))readings.Text=Ltr(N(m.CurrentA,"0.000000")+" A");
                 }
                 else if(electrical.Branches.TryGetValue(tool.Id,out var branch))readings.Text=Ltr(N(branch.VoltageV,"0.000")+" V")+"\n"+
                     T("تيار محسوب: ","Calculated current: ")+Ltr(N(Math.Abs(branch.CurrentA),"0.000000")+" A")+"\n"+
-                    Ltr(N(Math.Abs(branch.PowerW),"0.000")+" W")+(branch.Overloaded?"\n"+T("تحذير: تجاوز حد قدرة المقاومة.","Warning: resistor power rating exceeded."):"");
+                    Ltr(N(Math.Abs(branch.PowerW),"0.000")+" W")+(branch.Overloaded?"\n"+T("تحذير: تجاوز حد قدرة العنصر.","Warning: component power rating exceeded."):"");
             }
+            if(tool!=null&&readings.Text=="—")readings.Text=ExtraReading(tool);
             feedback.Text=electrical==null?"":CircuitFeedback(electrical.Status);
             if(electrical?.HasReadings==true&&Current.Tools.Any(t=>t.Kind=="resistor"&&electrical.Branches.TryGetValue(t.Id,out var b)&&Math.Abs(b.CurrentA-0.009)<1e-9&&Math.Abs(b.VoltageV-9)<1e-9&&t.Value==1000))
                 feedback.Text=T("قانون أوم تحقق: ","Ohm's law verified: ")+Ltr("I = 9 V / 1000 Ω = 0.009 A");
@@ -161,7 +169,7 @@ public partial class LabClient
     private void Help()
     {
         var dialog=new AcceptDialog{Title=T("دليل المختبر","Laboratory guide"),DialogText=T(
-            "التخفيف: اختر المحلول القياسي وانقل 25 mL إلى الكأس، ثم أضف 75 mL ماء.\nالمجس يقيس وعاءً قريباً منه. اسحب الأدوات لتغيير موضعها.\nالكهرباء: صل بطارية ومقاومة بسلكين. الملتيميتر على التوازي للجهد وعلى التوالي للتيار.\nزر الفأرة الأيمن وعجلة الفأرة للكاميرا. Q/E لتدوير الأداة وCtrl+Z للتراجع.\nالحفظ محلي على هذا الجهاز. نموذج التخفيف مثالي، ولا يحاكي التفاعلات أو الحرارة. الدائرة DC مثالية؛ التيار في القصر غير معرّف.\nهذا نموذج أولي؛ تقييم الأجهزة المدرسية والمراجعة العلمية المستقلة لم يكتمل بعد.",
-            "Dilution: transfer 25 mL of stock into the beaker, then add 75 mL water.\nMove the probe near its target. Drag tools to reposition them.\nElectricity: close the battery/resistor loop with two wires. Connect the multimeter in parallel for voltage or in series for current.\nRight-drag/wheel control the camera. Q/E rotate, Ctrl+Z undoes.\nSaves are local to this device. Dilution uses an ideal nonreactive solution; DC components are ideal. Short-circuit current is undefined.\nPrototype: school-hardware qualification and independent scientific review remain pending.")};AddChild(dialog);dialog.PopupCentered(new Vector2I(820,550));
+            "خزانة الأدوات + تفتح المكتبة والبحث. الجدول الدوري يعرض 118 عنصراً وعينات افتراضية.\nالدارات الجاهزة تشمل التوالي والتوازي و LED والمفتاح والمكثف.\nالتخفيف: اختر المحلول القياسي وانقل 25 mL إلى الكأس، ثم أضف 75 mL ماء.\nالمجس يقيس وعاءً قريباً منه. اسحب الأدوات لتغيير موضعها.\nالكهرباء: صل بطارية ومقاومة بسلكين. الملتيميتر على التوازي للجهد وعلى التوالي للتيار.\nزر الفأرة الأيمن وعجلة الفأرة للكاميرا. Q/E لتدوير الأداة وCtrl+Z للتراجع.\nالحفظ محلي على هذا الجهاز. نموذج التخفيف مثالي، ولا يحاكي التفاعلات أو الحرارة. الدائرة DC مثالية؛ التيار في القصر غير معرّف.\npH مثالي للماء و HCl و NaOH عند 25 °C فقط. المكثف والملف في حالة DC مستقرة؛ لا توجد محاكاة زمنية. أدوات المرجع قابلة للفحص فقط.\nهذا نموذج أولي؛ تقييم الأجهزة المدرسية والمراجعة العلمية المستقلة لم يكتمل بعد.",
+            "Equipment + opens the searchable library; Periodic table includes 118 elements and virtual samples.\nCircuit presets include series, parallel, LED, switch/lamp and capacitor.\nDilution: transfer 25 mL of stock into the beaker, then add 75 mL water.\nMove the probe near its target. Drag tools to reposition them.\nElectricity: close the battery/resistor loop with two wires. Connect the multimeter in parallel for voltage or in series for current.\nRight-drag/wheel control the camera. Q/E rotate, Ctrl+Z undoes.\nSaves are local to this device. Dilution uses an ideal nonreactive solution; DC components are ideal. Short-circuit current is undefined.\nIdeal pH supports water, HCl and NaOH at 25 °C. Capacitors/inductors are DC steady-state models; reference apparatus is inspectable only.\nPrototype: school-hardware qualification and independent scientific review remain pending.")};AddChild(dialog);dialog.PopupCentered(new Vector2I(820,550));
     }
 }

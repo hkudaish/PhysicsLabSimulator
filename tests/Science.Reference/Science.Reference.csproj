@@ -8,6 +8,8 @@
     <RollForward>LatestMajor</RollForward>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="../../src/GodotClient/assets/catalog/elements.json" Link="elements.json" CopyToOutputDirectory="PreserveNewest" />
+    <Compile Include="../../src/GodotClient/ToolCatalog.cs" Link="ToolCatalog.cs" />
     <Compile Include="../../src/GodotClient/SessionModel.cs" Link="SessionModel.cs" />
     <ProjectReference Include="../../src/Scientific.Core/Scientific.Core.csproj" />
     <ProjectReference Include="../../src/Lab.Persistence/Lab.Persistence.csproj" />

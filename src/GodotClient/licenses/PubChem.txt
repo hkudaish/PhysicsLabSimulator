@@ -1,0 +1,15 @@
+Periodic table reference data
+
+Source: PubChem, National Center for Biotechnology Information (NCBI)
+https://pubchem.ncbi.nlm.nih.gov/rest/pug/periodictable/JSON
+Retrieved 2026-11-03; 118 elements. Offline normalized snapshot.
+API reference: https://iupac.github.io/WFChemCookbook/datasources/pubchem_ptable.html
+
+The factual element data are attributed to PubChem/NCBI. Arabic factual names
+were cross-referenced against the user-supplied lab-local.zip. No code from
+that archive was incorporated. See assets/catalog/elements-provenance.json
+in the source project for checksums and normalization provenance.
+
+Atomic masses are rounded reference values from this snapshot. Entries do
+not all represent standard natural-abundance atomic weights. This table is
+not a chemical reaction or safety database. Samples in the app are virtual.

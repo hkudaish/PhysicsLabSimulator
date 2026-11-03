@@ -1,5 +1,7 @@
 # Visual upgrade — Godot 0.2 prototype
 
+Historical delivery: the current build and its additional scientific models are documented in [the equipment expansion report](../equipment-expansion/report.md). This report and its evidence describe the preserved 0.2 build.
+
 Date: 2026-11-02. This is the owner-authorized visual and interaction refinement of Phase 1. Accounts, licensing, cloud sync and Phase 2 work have not started. Phase 1 acceptance remains open for independent science review, classroom usability, approved minimum hardware and the full 60-minute stability protocol.
 
 ## Run

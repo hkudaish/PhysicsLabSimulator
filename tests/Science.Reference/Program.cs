@@ -4,6 +4,7 @@ using VirtualStem.Persistence;
 using VirtualStem.Client;
 
 int checks = 0;
+Elements.Load(File.ReadAllText(Path.Combine(AppContext.BaseDirectory,"elements.json")));
 void Check(bool ok, string name) { if (!ok) throw new Exception("FAIL: " + name); checks++; }
 void Near(double actual, double expected, string name) => Check(Math.Abs(actual-expected) <= 1e-10 + 1e-9*Math.Abs(expected), name);
 ChemistryState Stock(double concentration=1) => new(new[] { new Vessel("stock",0.5,0.1,concentration*0.1,Dilution.IdealSolute),new Vessel("beaker",0.25,0,0) });
@@ -76,7 +77,7 @@ var snapshot=Session.Encode(workspace);
 Check(Session.Encode(Session.Decode(snapshot))==snapshot,"complete workspace serialization roundtrip");
 bool Invalid(string json){try{Session.Decode(json);return false;}catch(Exception error)when(error is InvalidDataException or JsonException or ArgumentException){return true;}}
 Check(Invalid(snapshot.Replace("\"SchemaVersion\":1","\"SchemaVersion\":2")),"unsupported schema rejected");
-Check(Invalid(snapshot.Replace(ChemistryState.ModelVersion,"unknown-model")),"unsupported chemistry model rejected");
+Check(Invalid(snapshot.Replace(SolutionProperties.ModelVersion,"unknown-model")),"unsupported chemistry model rejected");
 Check(Invalid(snapshot.Replace("\"CapacityL\":0.25","\"CapacityL\":-1")),"impossible vessel state rejected");
 Check(Invalid(snapshot.Replace("\"Value\":1000","\"Value\":0")),"invalid resistance in saved draft rejected");
 Check(Invalid(snapshot[..^1]+",\"Unexpected\":1}"),"unknown draft fields rejected");
@@ -87,6 +88,67 @@ Check(restored.ChemistryUndo.Count==1&&restored.Electricity.Wires.Single().B=="r
 Check(!Session.CanPlace(workspace.Chemistry,"stock",0,-0.3),"tool overlap rejected");
 Check(!Session.CanPlace(workspace.Chemistry,"stock",double.NaN,0),"nonfinite placement rejected");
 Check(!Session.CanPlace(workspace.Chemistry,"stock",4,0),"off-table placement rejected");
+
+// Expanded solution models, element references and DC component boundaries.
+Near(SolutionProperties.Ph(new Vessel("acid",1,.1,.01,"HCl"))!.Value,1,"0.1 M strong acid pH");
+Near(SolutionProperties.Ph(new Vessel("base",1,.1,.01,"NaOH"))!.Value,13,"0.1 M strong base pH");
+Near(SolutionProperties.Ph(new Vessel("water",1,.1,0))!.Value,7,"water autoionization pH");
+Near(SolutionProperties.Ph(new Vessel("dilute",1,1,1e-9,"HCl"))!.Value,6.997828536876779,"very dilute acid includes water autoionization");
+Check(SolutionProperties.Ph(new Vessel("salt",1,.1,.01,"CuSO4"))==null,"no fabricated pH for unsupported hydrolysis");
+var separate=new ChemistryState(new[]{new Vessel("acid",1,.1,.01,"HCl"),new Vessel("base",1,.1,.01,"NaOH")});
+Check(Dilution.Transfer(separate,"acid","base",.01).Status==ChemistryStatus.UnsupportedModel,"different solutes cannot silently neutralize");
+foreach(string solute in new[]{"NaCl","CuSO4","HCl","NaOH","AgNO3","BaCl2","FeCl3","KI","Pb(NO3)2","H2SO4","C12H22O11"})
+{
+ var state=new ChemistryState(new[]{new Vessel("a",1,.1,.01,solute),new Vessel("b",1,0,0)});
+ var transfer=Dilution.Transfer(state,"a","b",.025);var water=Dilution.AddWater(transfer.State,"b",.075);
+ Near(water.State.Vessels["b"].ConcentrationMolL!.Value,.025,"curated-solute dilution");
+ Check(water.State.Vessels["b"].SoluteId==solute,"solute identity survives transfer and dilution");
+}
+Check(Elements.All.Length==118&&Elements.All[^1].Symbol=="Og","complete authoritative element reference");
+Near(Elements.Find("Cu")!.Mass*.01,.6355,"sample mass from reference atomic mass");
+Check(Elements.All.Select(e=>Elements.Position(e.Number)).Distinct().Count()==118,"periodic layout positions unique");
+foreach(string gate in new[]{"and","or","not","nand","nor","xor"})foreach(bool a in new[]{false,true})foreach(bool b in new[]{false,true})
+{
+ bool expected=gate switch{"and"=>a&&b,"or"=>a||b,"not"=>!a,"nand"=>!(a&&b),"nor"=>!(a||b),_=>a!=b};
+ Check(ToolCatalog.Output(gate,a,b)==expected,"logic truth table "+gate);
+}
+CircuitResult Led(double voltage,bool reversed=false)=>PiecewiseDc.Solve(new[]{"p","n","g"},new[]{Source(voltage),R("r","p","n",1000)},Array.Empty<CircuitWire>(),"g",
+ new[]{new Junction("led",reversed?"g":"n",reversed?"n":"g",2,10,.06)});
+Near(Led(9).Branches["led"].CurrentA,7.0/1010,"LED piecewise series current");
+Check(Math.Abs(Led(1).Branches["led"].CurrentA)<2e-9,"LED below forward threshold");
+Check(Math.Abs(Led(9,true).Branches["led"].CurrentA)<1e-8,"reverse LED has only declared off leakage");
+foreach(string preset in new[]{"switch","capacitor","inductor","bulb","rheostat","led","diode","voltmeter","ammeter"})
+{
+ var data=Session.New("electricity");data.Tools.RemoveAll(t=>t.Kind=="meter");
+ var part=ToolCatalog.Create(preset,"electricity");part.Id="part";part.X=1.8;part.Z=.8;data.Tools.Add(part);
+ void W(string a,string b)=>data.Wires.Add(new WireState{Id=Guid.NewGuid().ToString("N"),A=a,B=b});
+ W("battery.a","resistor.a");W("resistor.b","part.a");W("part.b","battery.b");
+ if(preset=="switch")
+ {
+  Check(Session.Electricity(data).Status==CircuitStatus.OpenCircuit,"open switch breaks path");part.Mode="closed";
+ }
+ var result=Session.Electricity(data);Check(result.HasReadings,"expanded DC component solves "+preset);
+ if(preset is "inductor" or "switch" or "ammeter")Near(result.Branches["resistor"].CurrentA,.009,"steady conductor/series meter current");
+ if(preset=="capacitor")Near(result.Branches["resistor"].CurrentA,0,"DC steady capacitor open current");
+ if(preset=="bulb")Near(result.Branches["part"].PowerW,81.0*100/(1100*1100),"fixed 100 ohm lamp power with 1k series resistor");
+}
+for(int i=0;i<100;i++)
+{
+ double v=random.NextDouble()*12,r=10+random.NextDouble()*9990,vf=1.5+random.NextDouble()*2;
+ var result=PiecewiseDc.Solve(new[]{"p","n","g"},new[]{Source(v),R("r","p","n",r)},Array.Empty<CircuitWire>(),"g",new[]{new Junction("led","n","g",vf,10,.06)});
+ Check(result.HasReadings,"random piecewise operating point exists");
+ Near(result.Branches["led"].CurrentA,v>vf?(v-vf)/(r+10):v/(r+PiecewiseDc.OffResistance),"random analytic LED reference");
+ Near(result.Branches.Values.Sum(b=>b.PowerW),0,"junction total power conservation");
+}
+var twoLeds=PiecewiseDc.Solve(new[]{"p","a","b","g"},new[]{Source(9),R("r","p","a",1000)},Array.Empty<CircuitWire>(),"g",
+ new[]{new Junction("red","a","b",2,10,.06),new Junction("blue","b","g",3,10,.06)});
+Near(twoLeds.Branches["red"].CurrentA,4.0/1020,"two junction series operating point");
+
+var legacy=Session.Decode(snapshot.Replace(SolutionProperties.ModelVersion,ChemistryState.ModelVersion).Replace(PiecewiseDc.ModelVersion,ResistiveDc.ModelVersion));
+Check(legacy.ChemistryModel==ChemistryState.ModelVersion,"legacy model header preserved exactly");
+var extra=ToolCatalog.Create("erlenmeyer","chemistry");extra.X=2.8;extra.Z=1.4;legacy.Chemistry.Tools.Add(extra);Session.TrackModels(legacy);
+Check(legacy.ChemistryModel==SolutionProperties.ModelVersion,"adding new tool explicitly upgrades model provenance");
+Check(Session.Decode(Session.Encode(legacy)).Chemistry.Tools.Any(t=>t.Kind=="erlenmeyer"),"expanded tools roundtrip");
 
 string folder=Path.Combine(Path.GetTempPath(),"virtual-stem-save-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(folder);
 try

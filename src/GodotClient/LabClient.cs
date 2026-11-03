@@ -40,6 +40,8 @@ public partial class LabClient : Control
         try
         {
             GetTree().AutoAcceptQuit=false;
+            GetViewport().GuiEmbedSubwindows=true;
+            Elements.Load(Godot.FileAccess.GetFileAsString("res://assets/catalog/elements.json"));
             highQuality=!OS.GetCmdlineUserArgs().Contains("--low-graphics")&&RenderingServer.GetCurrentRenderingMethod()=="forward_plus";
             font=ResourceLoader.Load<FontFile>("res://assets/Tajawal-Regular.ttf");
             var fallback=ResourceLoader.Load<FontFile>("res://assets/DejaVuSans.ttf");
@@ -87,7 +89,7 @@ public partial class LabClient : Control
         var before=Session.Clone(Current);var candidate=Session.Clone(Current);
         if(!apply(candidate))return false;
         candidate.Revision=Current.Revision+1;candidate.Actions.Add(action);if(candidate.Actions.Count>100)candidate.Actions.RemoveAt(0);
-        UndoStates.Add(before);if(UndoStates.Count>20)UndoStates.RemoveAt(0);Current=candidate;Refresh(rebuild);return true;
+        UndoStates.Add(before);if(UndoStates.Count>20)UndoStates.RemoveAt(0);Current=candidate;Session.TrackModels(workspace);Refresh(rebuild);return true;
     }
     private void SetQuality(bool high)
     {
@@ -111,21 +113,24 @@ public partial class LabClient : Control
         UndoStates.Add(previous);if(UndoStates.Count>20)UndoStates.RemoveAt(0);
         Current=Session.New(workspace.ActiveExperiment);Current.Revision=revision+1;wireStart=null;Refresh(true);Say(T("بدأت تجربة جديدة. يمكنك التراجع.","Experiment reset. Undo can restore the previous state."));
     }
-    private void AddTool(string kind)
+    private bool AddTool(string kind,string? content=null)
     {
-        Change("Add "+kind,data=>
+        return Change("Add "+kind,data=>
         {
             if(data.Tools.Count>=12){Say(T("الحد الأقصى 12 أداة على المنضدة.","Maximum 12 tools on the bench."));return false;}
-            (double x,double z)? placement=null;
-            for(double z=-1.3;z<=1.3&&placement==null;z+=0.8)for(double x=-2.8;x<=2.8;x+=0.8)
-                if(Session.CanPlace(data,"new",x,z)){placement=(x,z);break;}
-            if(placement==null){Say(T("لا توجد مساحة للأداة.","No free placement area."));return false;}
-            var tool=new ToolState{Id=Guid.NewGuid().ToString("N"),Kind=kind,X=placement.Value.x,Z=placement.Value.z};
-            if(kind=="stock"){tool.VolumeL=0.1;tool.Moles=0.2;tool.SoluteId=Dilution.IdealSolute;tool.Value=2;}
-            if(kind=="water"){tool.CapacityL=0.5;tool.VolumeL=0.5;}
-            if(kind=="battery")tool.Value=9;
-            if(kind=="resistor")tool.Value=1000;
-            if(kind=="meter")tool.Mode=Chemical?"concentration":"voltage";
+            (double x,double z)? placement=null;double best=-1;
+            for(double z=-1.5;z<=1.5;z+=0.25)for(double x=-3;x<=3;x+=0.25)
+                if(Session.CanPlace(data,"new",x,z))
+                {
+                    double distance=data.Tools.Count==0?0:data.Tools.Min(t=>(t.X-x)*(t.X-x)+(t.Z-z)*(t.Z-z));
+                    if(distance>best){best=distance;placement=(x,z);}
+                }
+            if(placement==null){Say(T("لا توجد مساحة؛ أزل أداة أو أعد ترتيب المنضدة.","No free space; remove or rearrange equipment."));return false;}
+            var tool=ToolCatalog.Create(kind,workspace.ActiveExperiment);tool.X=placement.Value.x;tool.Z=placement.Value.z;
+            if(kind=="element"&&content!=null)tool.Mode=content;
+            if(kind=="stock"&&content!=null){tool.SoluteId=content;tool.VolumeL=0.1;tool.Moles=0.01;}
+            if(kind is "meter" or "phmeter" or "thermometer")tool.Target=data.Tools.FirstOrDefault(t=>t.Kind=="beaker")?.Id;
+            if(kind=="balance")tool.Target=data.Tools.FirstOrDefault(t=>t.Kind=="element")?.Id;
             data.Tools.Add(tool);data.SelectedId=tool.Id;return true;
         },true);
     }
@@ -145,21 +150,24 @@ public partial class LabClient : Control
         string source=water?Current.Tools.FirstOrDefault(t=>t.Kind=="water"&&t.Moles==0)?.Id??"":Current.SelectedId;
         string target=water?Current.SelectedId:targetChoice.Selected>=0&&targetChoice.Selected<targetIds.Count?targetIds[targetChoice.Selected]:"";
         double volume=amount.Value/1000;
+        bool pureWater=Current.Tools.FirstOrDefault(t=>t.Id==source)?.Moles==0;
         bool applied=Change("Transfer "+N(volume)+" L "+source+" → "+target,data=>
         {
             if(!data.Tools.Any(t=>t.Id==source&&Session.Chemical(t.Kind))||!data.Tools.Any(t=>t.Id==target&&Session.Chemical(t.Kind)))
             {Say(T("اختر وعاءً ومصدراً صالحاً أولاً.","Choose a valid vessel and source first."));return false;}
+            if(data.Tools.First(t=>t.Id==source).Kind=="volpipette"&&Math.Abs(volume-0.025)>1e-10)
+            {Say(T("الماصة الحجمية تسلّم 25 mL كاملة؛ املأها أولاً.","Volumetric pipette delivers its full 25 mL; fill it first."));return false;}
             var result=Dilution.Transfer(Session.Chemistry(data),source,target,volume);
             if(!result.Applied){Say(ChemistryError(result.Status));return false;}
             Session.ApplyChemistry(data,result.State);data.SelectedId=target;return true;
         },true);
-        if(applied)bench.AnimatePour(source,target,water);
+        if(applied){bench.AnimatePour(source,target,pureWater);Say(T("تم النقل: ","Transferred: ")+Ltr(N(volume*1000)+" mL"));}
     }
     private string ChemistryError(ChemistryStatus status)=>status switch
     {
         ChemistryStatus.CapacityExceeded=>T("الكمية تتجاوز سعة الوعاء. لم يتغير المحلول.","Vessel capacity exceeded; solution unchanged."),
         ChemistryStatus.InsufficientVolume=>T("الكمية المطلوبة أكبر من الكمية المتاحة.","Requested volume exceeds available solution."),
-        ChemistryStatus.UnsupportedModel=>T("هذا المزيج خارج حدود النموذج العلمي.","This mixture is outside the supported scientific model."),
+        ChemistryStatus.UnsupportedModel=>T("خلط مذابين مختلفين أو التفاعلات خارج نموذج التخفيف.","Different solutes/reactions are outside the dilution model."),
         _=>T("تعذر تنفيذ النقل. راجع المصدر والوجهة والكمية.","Transfer rejected. Check source, target and quantity.")
     };
     private void SetComponentValue(double value)
@@ -168,7 +176,11 @@ public partial class LabClient : Control
         Change("Set value "+N(value),data=>
         {
             var tool=data.Tools.FirstOrDefault(t=>t.Id==id);if(tool==null)return false;
-            if((tool.Kind=="battery"&&(value<0||value>12))||(tool.Kind=="resistor"&&(value<10||value>10000))||!Numbers.Finite(value))return false;
+            if(!Numbers.Finite(value)||(tool.Kind=="battery"&&(value<0||value>12))||
+                ((tool.Kind is "resistor" or "rheostat" or "bulb")&&(value<10||value>10000))||
+                ((tool.Kind is "led" or "diode")&&(value<0.1||value>5))||
+                (tool.Kind=="element"&&(value<0.0001||value>1))||
+                ((tool.Kind is "capacitor" or "inductor")&&value<=0))return false;
             if(tool.Value==value)return false;tool.Value=value;return true;
         });
     }

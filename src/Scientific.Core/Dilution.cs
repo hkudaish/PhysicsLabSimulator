@@ -60,8 +60,10 @@ namespace VirtualStem.Science
             if (!Numbers.Finite(volumeL) || volumeL < 0 || sourceId == targetId ||
                 !state.Vessels.TryGetValue(sourceId, out var source) || !state.Vessels.TryGetValue(targetId, out var target))
                 return new ChemistryResult(state, ChemistryStatus.InvalidInput);
-            if ((source.Moles > 0 && source.SoluteId != IdealSolute) || (target.Moles > 0 && target.SoluteId != IdealSolute))
+            if ((source.Moles > 0 && !SolutionProperties.Supports(source.SoluteId)) || (target.Moles > 0 && !SolutionProperties.Supports(target.SoluteId)))
                 return new ChemistryResult(state, ChemistryStatus.UnsupportedModel);
+            if(source.Moles>0&&target.Moles>0&&source.SoluteId!=target.SoluteId)
+                return new ChemistryResult(state,ChemistryStatus.UnsupportedModel);
             if (volumeL == 0) return new ChemistryResult(state, ChemistryStatus.NoChange);
             if (volumeL > source.VolumeL) return new ChemistryResult(state, ChemistryStatus.InsufficientVolume);
             if (target.VolumeL + volumeL > target.CapacityL) return new ChemistryResult(state, ChemistryStatus.CapacityExceeded);
@@ -73,7 +75,7 @@ namespace VirtualStem.Science
             var changed = state.Vessels.Values.Select(v => v.Id == sourceId
                 ? new Vessel(v.Id, v.CapacityL, remainingVolume, remainingMoles, remainingMoles == 0 ? null : source.SoluteId)
                 : v.Id == targetId ? new Vessel(v.Id, v.CapacityL, v.VolumeL + volumeL, targetMoles,
-                    targetMoles > 0 ? IdealSolute : null) : v);
+                    targetMoles > 0 ? (source.Moles>0?source.SoluteId:target.SoluteId) : null) : v);
             return new ChemistryResult(new ChemistryState(changed), ChemistryStatus.Applied);
         }
 
@@ -81,7 +83,7 @@ namespace VirtualStem.Science
         {
             if (!Numbers.Finite(volumeL) || volumeL < 0 || !state.Vessels.TryGetValue(targetId, out var target))
                 return new ChemistryResult(state, ChemistryStatus.InvalidInput);
-            if (target.Moles > 0 && target.SoluteId != IdealSolute) return new ChemistryResult(state, ChemistryStatus.UnsupportedModel);
+            if (target.Moles > 0 && !SolutionProperties.Supports(target.SoluteId)) return new ChemistryResult(state, ChemistryStatus.UnsupportedModel);
             if (volumeL == 0) return new ChemistryResult(state, ChemistryStatus.NoChange);
             if (target.VolumeL + volumeL > target.CapacityL) return new ChemistryResult(state, ChemistryStatus.CapacityExceeded);
             return new ChemistryResult(new ChemistryState(state.Vessels.Values.Select(v => v.Id == targetId

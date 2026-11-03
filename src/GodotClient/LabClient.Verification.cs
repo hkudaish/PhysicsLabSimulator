@@ -14,7 +14,7 @@ public partial class LabClient
 {
     private readonly List<string> verified=new();
     private void Require(bool condition,string name)
-    {if(!condition)throw new InvalidOperationException("Verification failed: "+name);verified.Add(name);}
+    {if(!condition)throw new InvalidOperationException("Verification failed: "+name);verified.Add(name);File.WriteAllText(Path.Combine(ResultsFolder(),"progress.txt"),name);}
     private void Near(double actual,double expected,string name)=>Require(Math.Abs(actual-expected)<=1e-10+Math.Abs(expected)*1e-9,name);
     private string ResultsFolder()
     {
@@ -38,6 +38,12 @@ public partial class LabClient
             Near(Session.Electricity(workspace.Electricity).Branches["multimeter"].CurrentA,0.009,"restored calculated current");
             Require(workspace.ChemistryUndo.Count>0&&workspace.ElectricityUndo.Count>0,"undo history survives process restart");
             Require(Hash(Session.Encode(workspace))==File.ReadAllText(Path.Combine(ResultsFolder(),"saved-workspace.sha256")),"full workspace snapshot restored exactly");
+            if(OS.GetCmdlineUserArgs().Contains("--expect-expanded"))
+            {
+                string? draft=store.Load("expanded-verification",Session.WorkspaceVersion);Require(draft!=null,"expanded verification draft survives process restart");
+                var expanded=Session.Decode(draft!);
+                Require(expanded.Chemistry.Tools.Any(t=>t.Kind=="element"&&t.Mode=="Cu")&&expanded.Electricity.Tools.Any(t=>t.Kind=="and"&&t.Mode=="11"),"new sample and logic modes restore in fresh process");
+            }
         }
         else
         {
@@ -138,6 +144,7 @@ public partial class LabClient
             Require(!await LoadWorkspace()&&Session.Encode(workspace)==saved,"newer saved model cannot replace current work");
             Require(await SaveWorkspace(),"valid draft can be saved after rejected loads");
         }
+        if(!resume)await VerifyExpandedEquipment();
         if(OS.GetCmdlineUserArgs().Contains("--capture"))
         {
             Require(DisplayServer.GetName()!="headless","capture uses real graphics driver");
@@ -153,7 +160,7 @@ public partial class LabClient
             exported=OS.HasFeature("template"),renderer=RenderingServer.GetCurrentRenderingMethod(),gpu=RenderingServer.GetVideoAdapterName(),
             chemistryConcentration=workspace.Chemistry.Tools.First(t=>t.Id=="beaker").Vessel().ConcentrationMolL,
             currentA=Session.Electricity(workspace.Electricity).Branches["multimeter"].CurrentA,
-            visualVersion="0.2.0",advancedRenderingSupported=bench.SupportsAdvancedRendering,
+            visualVersion="0.3.0",elementCount=Elements.All.Length,equipmentCount=ToolCatalog.All.Length,advancedRenderingSupported=bench.SupportsAdvancedRendering,
             schoolHardwareApproved=false,independentScientificReview="pending",scope="Phase 1 visual upgrade integration checks; no release acceptance claimed"};
         File.WriteAllText(Path.Combine(ResultsFolder(),resume?"resume-result.json":"integration-result.json"),JsonSerializer.Serialize(report,new JsonSerializerOptions{WriteIndented=true}));
         GD.Print("Lab integration checks passed: "+verified.Count);await FinishAndQuit(0);
@@ -162,7 +169,7 @@ public partial class LabClient
     {
         bench.SnapCamera();
         await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);await ToSignal(GetTree(),SceneTree.SignalName.ProcessFrame);
-        await ToSignal(RenderingServer.Singleton,RenderingServer.SignalName.FramePostDraw);
+        RenderingServer.ForceDraw(false);RenderingServer.ForceSync();
         var image=viewport.GetTexture().GetImage();var colors=new HashSet<Color>();
         for(int x=0;x<image.GetWidth();x+=32)for(int y=0;y<image.GetHeight();y+=32)colors.Add(image.GetPixel(x,y));
         Require(colors.Count>8,name+" 3D viewport renders equipment");

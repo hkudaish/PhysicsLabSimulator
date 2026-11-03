@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-04",
+  "scienceReferenceAssertions": 829,
+  "sciencePlatforms": [
+    "Linux .NET 10",
+    "Windows .NET 8"
+  ],
+  "phase0ArtifactTests": 19,
+  "buildWarnings": 0,
+  "buildErrors": 0,
+  "equipmentTypes": 52,
+  "elements": 118,
+  "reagents": 11,
+  "presets": 5,
+  "scope": "Development checks; independent scientific review and school-hardware acceptance remain open."
+}

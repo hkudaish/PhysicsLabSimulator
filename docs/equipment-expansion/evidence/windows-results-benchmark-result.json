@@ -1,0 +1,66 @@
+{
+  "samples": [
+    {
+      "experiment": "chemistry",
+      "preset": "low-no-screen-space-effects",
+      "fpsLimit": 60,
+      "seconds": 10.0172366,
+      "frames": 602,
+      "averageFps": 60.09641361474468,
+      "p95FrameMs": 16.679700000000075,
+      "maximumFrameMs": 16.894199999999415,
+      "initialPrivateBytes": 1459400704,
+      "finalPrivateBytes": 1376960512,
+      "workingSetBytes": 719245312
+    },
+    {
+      "experiment": "chemistry",
+      "preset": "realistic-ssao-ssr-4x-msaa",
+      "fpsLimit": 120,
+      "seconds": 10.0080408,
+      "frames": 1202,
+      "averageFps": 120.1034260361586,
+      "p95FrameMs": 8.365100000000014,
+      "maximumFrameMs": 9.05889999999987,
+      "initialPrivateBytes": 1376972800,
+      "finalPrivateBytes": 1376784384,
+      "workingSetBytes": 719327232
+    },
+    {
+      "experiment": "electricity",
+      "preset": "low-no-screen-space-effects",
+      "fpsLimit": 60,
+      "seconds": 10.0081517,
+      "frames": 601,
+      "averageFps": 60.051047587028,
+      "p95FrameMs": 16.677299999999562,
+      "maximumFrameMs": 16.740299999999486,
+      "initialPrivateBytes": 1376784384,
+      "finalPrivateBytes": 1376780288,
+      "workingSetBytes": 719536128
+    },
+    {
+      "experiment": "electricity",
+      "preset": "realistic-ssao-ssr-4x-msaa",
+      "fpsLimit": 120,
+      "seconds": 10.0084404,
+      "frames": 1202,
+      "averageFps": 120.09863075071485,
+      "p95FrameMs": 8.36619999999999,
+      "maximumFrameMs": 9.090599999999505,
+      "initialPrivateBytes": 1376784384,
+      "finalPrivateBytes": 1376776192,
+      "workingSetBytes": 719650816
+    }
+  ],
+  "renderer": "forward_plus",
+  "gpu": "NVIDIA GeForce RTX 4060 Ti",
+  "viewport": {
+    "width": 1012,
+    "height": 768
+  },
+  "scene": "furnished room; both scientific benches; scripted smooth camera orbit",
+  "schoolHardwareApproved": false,
+  "fullHourAcceptance": false,
+  "scope": "Development-PC visual/performance smoke; no school-hardware or leak qualification"
+}

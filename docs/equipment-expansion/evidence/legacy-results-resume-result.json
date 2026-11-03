@@ -1,0 +1,29 @@
+{
+  "success": true,
+  "passed": [
+    "standalone exported runtime",
+    "load saved workspace in fresh process",
+    "restored dilution volume",
+    "restored dilution solute",
+    "restored wire topology",
+    "restored instrument mode",
+    "restored calculated current",
+    "undo history survives process restart",
+    "full workspace snapshot restored exactly",
+    "final saved workspace"
+  ],
+  "engine": "4.7.2-stable (official)",
+  "platform": "Windows",
+  "exported": true,
+  "renderer": "forward_plus",
+  "gpu": "",
+  "chemistryConcentration": 0.5,
+  "currentA": 0.009000000000000001,
+  "visualVersion": "0.3.0",
+  "elementCount": 118,
+  "equipmentCount": 52,
+  "advancedRenderingSupported": true,
+  "schoolHardwareApproved": false,
+  "independentScientificReview": "pending",
+  "scope": "Phase 1 visual upgrade integration checks; no release acceptance claimed"
+}

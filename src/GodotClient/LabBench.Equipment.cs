@@ -7,6 +7,7 @@ public sealed partial class LabBench
 {
     private void Vessel(Node3D node,ToolState tool)
     {
+        if(tool.Kind is not ("stock" or "water" or "beaker" or "cylinder")){SpecialVessel(node,tool);return;}
         bool cylinder=tool.Kind=="cylinder",bottle=tool.Kind=="water"||tool.Kind=="stock";
         float height=cylinder?1.08f:bottle?1.02f:0.8f,radius=cylinder?0.17f:0.33f;
         Vector2[] profile;

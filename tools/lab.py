@@ -11,8 +11,8 @@ import zipfile
 from run_godot_spike import context, ROOT
 
 PROJECT = ROOT / 'src/GodotClient'
-OUTPUT = ROOT / 'artifacts/visual-upgrade'
-ARCHIVE = 'VirtualSTEM-Lab-Visual-Windows-x64.zip'
+OUTPUT = ROOT / 'artifacts/equipment-upgrade'
+ARCHIVE = 'VirtualSTEM-Lab-Expanded-Windows-x64.zip'
 
 
 def digest(path):
@@ -33,6 +33,10 @@ def main():
     provenance=json.loads((lighting/'provenance.json').read_text())
     if digest(lighting/'studio_small_09_1k.hdr') != provenance['sha256']:
         raise RuntimeError('Bundled lighting asset does not match its recorded checksum.')
+    catalog=PROJECT/'assets/catalog'
+    element_provenance=json.loads((catalog/'elements-provenance.json').read_text())
+    if digest(catalog/'elements.json') != element_provenance['normalizedSha256']:
+        raise RuntimeError('Bundled element reference does not match its recorded checksum.')
     if args.action in ['package-check', 'legacy-check']:
         args.windows = args.resume = True
     binary, env = context(False)
@@ -108,6 +112,8 @@ def main():
             command += ['--capture']
         if args.windows:
             command += ['--expect-export']
+        if args.resume and args.action!='legacy-check':
+            command += ['--expect-expanded']
         if args.benchmark_seconds:
             command += ['--benchmark-seconds', str(args.benchmark_seconds)]
         report_path = results / ('resume-result.json' if args.resume else 'integration-result.json')
@@ -144,7 +150,7 @@ def main():
             for path in [*files, checksums]:
                 archive.write(path, 'VirtualSTEM-Lab/' + path.relative_to(exported).as_posix())
         manifest = dict(archive=target.name, bytes=target.stat().st_size, sha256=digest(target), files=sums,
-                        scope='Phase 1 visual upgrade; independent science review and target-school qualification pending.')
+                        scope='Expanded laboratory prototype; independent science review and target-school qualification pending.')
         (OUTPUT / 'package-manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
         print(json.dumps({k: manifest[k] for k in ['archive', 'bytes', 'sha256']}, indent=2))
         return 0
@@ -168,10 +174,16 @@ def main():
             shutil.copy2(runtime_license/name, exported/'licenses'/('dotnet-'+name))
         (exported/'LowGraphics.bat').write_bytes(b'@echo off\r\ncd /d "%~dp0"\r\nstart "" "VirtualStemLab.exe" --rendering-method gl_compatibility -- --low-graphics\r\n')
         (exported/'README.txt').write_text(
-            'Virtual STEM Laboratory — Visual upgrade\n\n'
+            'Virtual STEM Laboratory — Expanded equipment and elements\n\n'
             'Extract the complete ZIP and run VirtualStemLab.exe on Windows x64.\n'
             'Keep the executable, PCK and managed data folder together. No Godot editor is required.\n'
             'For older graphics cards, launch LowGraphics.bat.\n'
+            'Equipment + opens the searchable chemistry/circuit catalog. Periodic table has 118 elements.\n'
+            'Circuit presets loads five wired examples; Undo restores the preceding bench.\n'
+            '52 equipment types include functional instruments and explicitly labeled 3D reference apparatus.\n'
+            'Chemistry: ideal single-solute dilution; pH only for water/HCl/NaOH at 25 C. No reactions or heating.\n'
+            'Circuits: DC steady state, piecewise diodes/LEDs and standalone logic trainers. No AC/transients.\n'
+            'Close an older app before opening this build. New v2 model drafts require this version.\n'
             'Help inside the app explains dilution, wiring, camera and undo controls.\n'
             'Both experiment drafts save automatically when closing, or use Save locally.\n'
             'Local drafts: %APPDATA%/Godot/app_userdata/Virtual STEM Laboratory/drafts/laboratory.db\n'

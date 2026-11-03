@@ -39,7 +39,7 @@ public sealed partial class LabBench
         foreach(var tool in data.Tools)
         {
             string reading=Reading(tool,data,result);
-            string signature=$"{tool.Kind}:{tool.Value:R}:{tool.VolumeL:R}:{tool.CapacityL:R}:{tool.Moles:R}:{tool.Mode}:{reading}";
+            string signature=$"{tool.Kind}:{tool.Value:R}:{tool.VolumeL:R}:{tool.CapacityL:R}:{tool.Moles:R}:{tool.Mode}:{tool.SoluteId}:{reading}";
             if(!signatures.TryGetValue(tool.Id,out string? existing)||existing!=signature)
             {
                 RemoveTool(tool.Id);
@@ -47,11 +47,12 @@ public sealed partial class LabBench
                 if(Session.Chemical(tool.Kind))Vessel(node,tool);
                 else if(tool.Kind=="battery")PowerSupply(node,tool);
                 else if(tool.Kind=="resistor")Resistor(node,tool);
-                else Meter(node,tool,reading);
-                if(data.Experiment=="electricity")
+                else ExtraDevice(node,tool,data,result);
+                if(data.Experiment=="electricity"&&ToolCatalog.Electrical(tool.Kind))
                 {
                     var ports=tool.Kind=="meter"?new[]{new Vector3(-0.22f,0.23f,0.4f),new Vector3(0.22f,0.23f,0.4f)}:
                         tool.Kind=="resistor"?new[]{new Vector3(-0.43f,0.19f,0),new Vector3(0.43f,0.19f,0)}:
+                        tool.Kind!="battery"?new[]{new Vector3(-0.43f,0.22f,0.34f),new Vector3(0.43f,0.22f,0.34f)}:
                         new[]{new Vector3(-0.4f,0.67f,0.14f),new Vector3(0.4f,0.67f,0.14f)};
                     Terminal(node,tool.Id+".a",ports[0],new Color(0.72f,0.035f,0.025f),"+");
                     Terminal(node,tool.Id+".b",ports[1],new Color(0.035f,0.04f,0.045f),"−");
@@ -89,15 +90,25 @@ public sealed partial class LabBench
     }
     private static string Reading(ToolState tool,SessionData data,CircuitResult? result)
     {
-        if(tool.Kind!="meter")return "";
+        if(tool.Kind is "element")return tool.Mode;
+        if(ToolCatalog.Logic(tool.Kind))return ToolCatalog.Output(tool.Kind,tool.Mode[0]=='1',tool.Mode[1]=='1')?"1":"0";
+        if(tool.Kind is "bulb" or "led" or "diode")return result?.HasReadings==true&&result.Branches.TryGetValue(tool.Id,out var light)?F(light.PowerW,"0.######"):"off";
+        if(tool.Kind is "balance" or "phmeter" or "thermometer")
+        {
+            var sample=data.Tools.FirstOrDefault(t=>t.Id==tool.Target);if(sample==null||Distance(tool,sample)>1.65)return "—";
+            if(tool.Kind=="balance")return sample.Kind=="element"&&Elements.Find(sample.Mode) is ElementInfo e?F(sample.Value*e.Mass,"0.0000")+" g":"—";
+            if(!Session.Chemical(sample.Kind))return "—";
+            return tool.Kind=="thermometer"?"25.0 °C":SolutionProperties.Ph(sample.Vessel()) is double ph?"pH "+F(ph,"0.000"):"—";
+        }
+        if(tool.Kind is not ("meter" or "voltmeter" or "ammeter"))return "";
         if(data.Experiment=="chemistry")
         {
             var target=data.Tools.FirstOrDefault(t=>t.Id==tool.Target&&Session.Chemical(t.Kind));
             return target!=null&&Distance(tool,target)<=1.65&&target.Vessel().ConcentrationMolL is double c?F(c,"0.000")+" mol/L":"—";
         }
         if(result?.HasReadings!=true)return "—";
-        if(tool.Mode=="voltage"&&result.VoltageBetween(tool.Id+".a",tool.Id+".b") is double voltage)return F(voltage,"0.000")+" V";
-        return tool.Mode=="current"&&result.Branches.TryGetValue(tool.Id,out var branch)?F(branch.CurrentA,"0.000000")+" A":"—";
+        if((tool.Mode=="voltage"||tool.Kind=="voltmeter")&&result.VoltageBetween(tool.Id+".a",tool.Id+".b") is double voltage)return F(voltage,"0.000")+" V";
+        return (tool.Mode=="current"||tool.Kind=="ammeter")&&result.Branches.TryGetValue(tool.Id,out var branch)?F(branch.CurrentA,"0.000000")+" A":"—";
     }
     public void UpdateCamera(SessionData data,bool immediate=false)
     {
