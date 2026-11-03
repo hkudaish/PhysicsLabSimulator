@@ -1,0 +1,5 @@
+# Keep checksummed vendor/data assets byte-identical on Windows checkouts.
+# Whitespace in unmodified upstream JavaScript is maintained by its upstream.
+src/BrowserLab/wwwroot/vendor/* -text -whitespace
+src/GodotClient/assets/catalog/*.json -text
+*.hdr binary

@@ -1,5 +1,7 @@
 # Virtual STEM Laboratory
 
+**Browser version:** run `python3 tools/browser_lab.py` and open **http://localhost:5080**. It provides the 3D chemistry/circuit benches in English and Arabic, with the same C# scientific engine, equipment catalog and element reference. See [browser launch instructions](src/BrowserLab/README.md) and [verified behavior and captures](docs/browser-lab/report.md). The local host must remain running; browser drafts save separately from desktop drafts.
+
 The Windows prototype has offline chemistry and circuit benches with 52 equipment types, 118 elements, 11 stock solutions and five wired circuit presets. It includes calculated instruments, Arabic/English UI, movable equipment, wiring, undo and SQLite save/resume. Reference apparatus is clearly labeled; chemistry reactions and circuit transients are not simulated.
 
 Use [the expanded Windows ZIP](artifacts/equipment-upgrade/VirtualSTEM-Lab-Expanded-Windows-x64.zip) for the current build. Extract everything and run **VirtualStemLab.exe**. Open **Equipment +**, **Periodic table** or **Circuit presets** to explore the additions. Forward+ provides the realistic profile; **LowGraphics.bat** launches the lighter OpenGL path. No editor or .NET installation is required. See [the equipment expansion report](docs/equipment-expansion/report.md).

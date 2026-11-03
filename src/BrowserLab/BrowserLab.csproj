@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Scientific.Core/Scientific.Core.csproj" />
+    <Compile Include="../GodotClient/SessionModel.cs" Link="Shared/SessionModel.cs" />
+    <Compile Include="../GodotClient/ToolCatalog.cs" Link="Shared/ToolCatalog.cs" />
+    <Content Include="../GodotClient/assets/catalog/*.json" Link="Catalog/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

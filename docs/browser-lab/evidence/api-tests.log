@@ -1,0 +1,5 @@
+Command: python3 -m unittest discover -s tests/browser -p 'test_*.py' -q
+----------------------------------------------------------------------
+Ran 9 tests in 0.264s
+
+OK
