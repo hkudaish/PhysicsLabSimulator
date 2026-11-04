@@ -1,6 +1,6 @@
 # Virtual STEM Laboratory
 
-**Browser version:** run `python3 tools/browser_lab.py` and open **http://localhost:5080**. It provides the 3D chemistry/circuit benches in English and Arabic, with the same C# scientific engine, equipment catalog and element reference. See [browser launch instructions](src/BrowserLab/README.md) and [verified behavior and captures](docs/browser-lab/report.md). The local host must remain running; browser drafts save separately from desktop drafts.
+**Browser version:** run `python3 tools/browser_lab.py` and open **http://localhost:5080**. The current app has a full-width workbench, contextual controls, drag/drop, undo/redo, and **12 runnable guided experiments plus six labeled concept lessons**, with saved progress and per-experiment benches. Choose **Guided Mode** or **Free Mode**. It retains the shared C# scientific engine, 52 equipment types, 118 elements and English/Arabic UI. See [launch instructions](src/BrowserLab/README.md) and [the guided-lab delivery and captures](docs/guided-lab/report.md). Keep the local host running; browser notebooks save separately from desktop drafts.
 
 The Windows prototype has offline chemistry and circuit benches with 52 equipment types, 118 elements, 11 stock solutions and five wired circuit presets. It includes calculated instruments, Arabic/English UI, movable equipment, wiring, undo and SQLite save/resume. Reference apparatus is clearly labeled; chemistry reactions and circuit transients are not simulated.
 

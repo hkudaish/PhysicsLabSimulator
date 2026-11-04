@@ -1,0 +1,6 @@
+{
+  "status": "ok",
+  "version": "0.5.0-browser",
+  "chemistry": "ideal-single-solute-v2",
+  "electricity": "dc-components-v2"
+}

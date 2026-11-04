@@ -20,6 +20,11 @@ export class LabScene {
     this.room=new THREE.Group();this.scene.add(this.room);this.buildRoom();
     this.objects=new THREE.Group();this.scene.add(this.objects);this.leads=new THREE.Group();this.scene.add(this.leads);
     this.selection=new THREE.Mesh(new THREE.TorusGeometry(.56,.014,8,64),new THREE.MeshBasicMaterial({color:0x74ad54}));this.selection.rotation.x=Math.PI/2;this.selection.visible=false;this.scene.add(this.selection);
+    this.preview=new THREE.Group();this.scene.add(this.preview);this.editable=true;this.moveMode=false;
+    this.guideMark=new THREE.Mesh(new THREE.TorusGeometry(.57,.022,8,64),new THREE.MeshBasicMaterial({color:0xe7b84f,transparent:true,opacity:.8,depthTest:false}));this.guideMark.rotation.x=Math.PI/2;this.guideMark.visible=false;this.guideMark.renderOrder=10;this.scene.add(this.guideMark);
+    this.ghost=new THREE.Group();const ghostMaterial=new THREE.MeshBasicMaterial({color:0x64af77,transparent:true,opacity:.18,depthWrite:false});
+    const ghostBody=new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,.9,32),ghostMaterial);ghostBody.position.y=.45;this.ghost.add(ghostBody);
+    const ghostRing=new THREE.Mesh(new THREE.TorusGeometry(.54,.022,8,48),new THREE.MeshBasicMaterial({color:0x64af77}));ghostRing.rotation.x=Math.PI/2;ghostRing.position.y=.02;this.ghost.add(ghostRing);this.ghost.visible=false;this.scene.add(this.ghost);
     this.ray=new THREE.Raycaster();this.pointer=new THREE.Vector2();this.plane=new THREE.Plane(new THREE.Vector3(0,1,0),-BENCH);this.drag=null;
     this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(container);
     this.bindPointer();this.resize();
@@ -27,7 +32,7 @@ export class LabScene {
     new HDRLoader().load('/assets/studio_small_09_1k.hdr',texture=>{
       const target=pmrem.fromEquirectangular(texture);this.scene.environment=target.texture;this.environment=target;texture.dispose();pmrem.dispose();
     },undefined,()=>{pmrem.dispose();this.callbacks.notice('Environment lighting unavailable; using local scene lights.');});
-    let last=0;const render=now=>{this.frame=requestAnimationFrame(render);if(now-last<1000/60-1)return;last=now;this.controls.update();this.renderer.render(this.scene,this.camera);};this.frame=requestAnimationFrame(render);
+    let last=0;const render=now=>{this.frame=requestAnimationFrame(render);if(now-last<1000/60-1)return;last=now;this.controls.update();if(this.guideMark.visible)this.guideMark.material.opacity=.55+Math.sin(now*.003)*.22;this.renderer.render(this.scene,this.camera);this.callbacks.frame?.();};this.frame=requestAnimationFrame(render);
     this.renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();this.callbacks.notice('Graphics context lost. Your saved draft is safe; reload to restore the bench.');});
     document.addEventListener('visibilitychange',()=>{if(document.hidden)this.controls.autoRotate=false;});
   }
@@ -104,7 +109,7 @@ export class LabScene {
       this.cylinder(group,.095,.095,.05,x,.04,z,this.material(colors.black));
       this.torus(group,.067,.019,x,.075,z,this.material(index===0?colors.red:0x58615c,{metalness:.5}));
       const hit=this.sphere(group,.063,x,.092,z,this.material(index===0?0xd55a4d:0x323c39,{metalness:.3}));hit.userData.terminal=tool.Id+'.'+suffix;hit.userData.tool=tool.Id;this.pickables.push(hit);
-      this.ports.set(tool.Id+'.'+suffix,{group,position:new THREE.Vector3(x,.09,z)});
+      this.ports.set(tool.Id+'.'+suffix,{group,position:new THREE.Vector3(x,.09,z),mesh:hit,color:hit.material.color.getHex()});
     }
   }
   portPosition(id){const port=this.ports.get(id);return port?port.group.localToWorld(port.position.clone()):null;}
@@ -118,6 +123,40 @@ export class LabScene {
     }
   }
   select(id){this.selected=id;const group=this.groups.get(id);this.selection.visible=!!group;if(group)this.selection.position.set(group.position.x,BENCH+.016,group.position.z);}
+  setEditable(value){this.editable=value;if(!value){this.clearPlacement();this.disposeGroup(this.preview);}this.container.dataset.editable=String(value);}
+  setMoveMode(value){this.moveMode=value;this.renderer.domElement.style.cursor=value?'move':'default';}
+  projectBench(x,z){return this.toScreen(new THREE.Vector3(x,BENCH+.04,z));}
+  contextPoint(id){const group=this.groups.get(id);return group?this.toScreen(group.position.clone().add(new THREE.Vector3(0,1.45,0))):null;}
+  toScreen(position){const p=position.project(this.camera),rect=this.renderer.domElement.getBoundingClientRect();return {x:rect.left+(p.x+1)*rect.width/2,y:rect.top+(1-p.y)*rect.height/2};}
+  pointOnBench(x,y){const r=this.renderer.domElement.getBoundingClientRect();this.pointer.set((x-r.left)/r.width*2-1,-(y-r.top)/r.height*2+1);this.ray.setFromCamera(this.pointer,this.camera);const p=new THREE.Vector3();return this.ray.ray.intersectPlane(this.plane,p);}
+  canPlace(x,z,id='new'){return Number.isFinite(x)&&Number.isFinite(z)&&Math.abs(x)<=3&&Math.abs(z)<=1.5&&this.state.Tools.filter(t=>t.Id!==id).every(t=>Math.hypot(t.X-x,t.Z-z)>=1.15);}
+  showPlacement(){this.ghost.visible=true;}
+  clearPlacement(){this.ghost.visible=false;}
+  previewPlacement(clientX,clientY){const p=this.pointOnBench(clientX,clientY);if(!p)return null;const x=Math.round(p.x*4)/4,z=Math.round(p.z*4)/4,valid=this.editable&&this.canPlace(x,z);this.ghost.position.set(x,BENCH,z);this.ghost.visible=true;this.ghost.children.forEach(m=>m.material.color.set(valid?0x60a36b:0xc66a4f));return {x,z,valid};}
+  setGuideStep(step){
+    this.guideMark.visible=!!step;if(!step)return;
+    const target=this.state?.Tools.filter(t=>t.Kind===step.kind&&(!step.content||(t.Kind==='element'?t.Mode:t.SoluteId)===step.content))[step.index||0];
+    const position=step.placement??(target?[target.X,target.Z]:null);if(!position){this.guideMark.visible=false;return;}
+    this.guideMark.position.set(position[0],BENCH+.028,position[1]);
+  }
+  validTerminal(id){return id&&id!==this.wireStart&&this.ports.has(id)&&!this.state.Wires.some(w=>w.Id!==this.wireEdit?.id&&(w.A===id&&w.B===this.wireStart||w.B===id&&w.A===this.wireStart));}
+  setWireStart(id,edit=null){
+    this.wireStart=id;this.wireEdit=edit;
+    if(!id)this.disposeGroup(this.preview);
+    for(const [key,p] of this.ports){p.mesh.material.color.setHex(!id?p.color:key===id?0xe5bc4f:this.validTerminal(key)?0x75bd7c:0x6a7a70);}
+  }
+  nearestTerminal(x,y){
+    let nearest=null,distance=24;
+    for(const id of this.ports.keys()){if(!this.validTerminal(id))continue;const point=this.toScreen(this.portPosition(id));const d=Math.hypot(point.x-x,point.y-y);if(d<distance){distance=d;nearest=id;}}
+    return nearest;
+  }
+  previewLead(x,y){
+    if(!this.wireStart||!this.editable)return null;
+    const start=this.portPosition(this.wireStart),terminal=this.nearestTerminal(x,y),end=terminal?this.portPosition(terminal):this.pointOnBench(x,y);
+    this.disposeGroup(this.preview);if(!start||!end)return terminal;
+    const mid=start.clone().lerp(end,.5);mid.y=BENCH+.16;mid.z+=.25;
+    this.line(this.preview,[start.toArray(),mid.toArray(),end.toArray()],.025,this.material(terminal?0x7cab56:0xd3ac56,{emissive:terminal?0x416b26:0x685225,emissiveIntensity:.3}));return terminal;
+  }
   buildTool(group,tool,reading,experiment){
     const kind=tool.Kind,def=this.definitions.find(d=>d.Kind===kind);
     const mat=(color,options)=>this.material(color,options);
@@ -289,23 +328,36 @@ export class LabScene {
     const canvas=this.renderer.domElement;
     const intersection=event=>{const rect=canvas.getBoundingClientRect();this.pointer.set((event.clientX-rect.left)/rect.width*2-1,-(event.clientY-rect.top)/rect.height*2+1);this.ray.setFromCamera(this.pointer,this.camera);return this.ray.intersectObjects(this.pickables,false)[0];};
     canvas.addEventListener('pointerdown',event=>{
-      if(event.button!==0)return;const hit=intersection(event);if(!hit)return;
-      if(hit.object.userData.terminal){this.controls.enabled=false;this.terminalDown={id:hit.object.userData.terminal,x:event.clientX,y:event.clientY};return;}
+      if(event.button!==0)return;const hit=intersection(event);if(!hit){this.emptyDown={x:event.clientX,y:event.clientY};return;}
+      if(hit.object.userData.terminal&&this.editable){
+        const id=hit.object.userData.terminal;
+        this.controls.enabled=false;this.terminalDown={id,x:event.clientX,y:event.clientY,started:false};
+        if(event.altKey){const wire=this.state.Wires.find(w=>w.A===id||w.B===id);if(wire){this.callbacks.beginRewire?.(wire.Id,wire.A===id?'A':'B');this.terminalDown.started=true;}}
+        canvas.setPointerCapture(event.pointerId);return;
+      }
       const id=hit.object.userData.tool,group=this.groups.get(id);if(!group)return;
+      const wasSelected=this.selected===id;
       this.callbacks.select(id);this.select(id);const point=new THREE.Vector3();this.ray.ray.intersectPlane(this.plane,point);
+      if(!this.editable||!this.moveMode&&!wasSelected)return;
       this.drag={id,group,startX:event.clientX,startY:event.clientY,offset:group.position.clone().sub(point),original:group.position.clone(),moved:false};this.controls.enabled=false;canvas.setPointerCapture(event.pointerId);
     },true);
     canvas.addEventListener('pointermove',event=>{
-      if(!this.drag){const hit=intersection(event);canvas.style.cursor=hit?(hit.object.userData.terminal?'crosshair':'grab'):'default';return;}
+      if(this.terminalDown){if(!this.terminalDown.started&&Math.hypot(event.clientX-this.terminalDown.x,event.clientY-this.terminalDown.y)>5){this.callbacks.beginWire?.(this.terminalDown.id);this.terminalDown.started=true;}if(this.terminalDown.started)this.previewLead(event.clientX,event.clientY);return;}
+      if(!this.drag){const hit=intersection(event);canvas.style.cursor=hit?(hit.object.userData.terminal?'crosshair':this.moveMode?'move':'grab'):'default';if(this.wireStart)this.previewLead(event.clientX,event.clientY);return;}
       intersection(event);const point=new THREE.Vector3();if(!this.ray.ray.intersectPlane(this.plane,point))return;
       if(Math.hypot(event.clientX-this.drag.startX,event.clientY-this.drag.startY)>4)this.drag.moved=true;
-      if(this.drag.moved){point.add(this.drag.offset);this.drag.group.position.set(THREE.MathUtils.clamp(point.x,-3,3),BENCH,THREE.MathUtils.clamp(point.z,-1.5,1.5));this.select(this.drag.id);this.drawWires();canvas.style.cursor='grabbing';}
+      if(this.drag.moved){point.add(this.drag.offset);this.drag.group.position.set(THREE.MathUtils.clamp(point.x,-3,3),BENCH,THREE.MathUtils.clamp(point.z,-1.5,1.5));this.select(this.drag.id);this.selection.material.color.setHex(this.canPlace(this.drag.group.position.x,this.drag.group.position.z,this.drag.id)?0x74ad54:0xc6664d);this.drawWires();canvas.style.cursor='grabbing';}
     });
     const end=event=>{
       this.controls.enabled=true;
-      if(this.terminalDown){if(event.type==='pointerup'&&Math.hypot(event.clientX-this.terminalDown.x,event.clientY-this.terminalDown.y)<8)this.callbacks.terminal(this.terminalDown.id);this.terminalDown=null;}
+      if(this.emptyDown){if(event.type==='pointerup'&&Math.hypot(event.clientX-this.emptyDown.x,event.clientY-this.emptyDown.y)<4)this.callbacks.select('');this.emptyDown=null;}
+      if(this.terminalDown){
+        if(event.type==='pointerup'){if(this.terminalDown.started){const target=this.nearestTerminal(event.clientX,event.clientY);if(target)this.callbacks.terminal(target);}else this.callbacks.terminal(this.terminalDown.id);}
+        this.terminalDown=null;
+      }
       const drag=this.drag;this.drag=null;if(!drag)return;
       if(event.type==='pointercancel'){drag.group.position.copy(drag.original);this.drawWires();this.select(drag.id);return;}
+      this.selection.material.color.setHex(0x74ad54);
       if(drag.moved)this.callbacks.move(drag.id,Math.round(drag.group.position.x*20)/20,Math.round(drag.group.position.z*20)/20);
       canvas.style.cursor='grab';
     };

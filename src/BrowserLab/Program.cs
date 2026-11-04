@@ -6,7 +6,9 @@ using VirtualStem.Science;
 using VirtualStem.Browser;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseUrls("http://127.0.0.1:5080");
+int port=builder.Configuration.GetValue<int?>("port")??5080;
+if(port<1024||port>65535)throw new ArgumentException("Choose an unprivileged loopback port between 1024 and 65535.");
+builder.WebHost.UseUrls($"http://127.0.0.1:{port}");
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 4 * 1024 * 1024);
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -31,9 +33,9 @@ app.UseDefaultFiles();
 var types=new FileExtensionContentTypeProvider();
 types.Mappings[".hdr"]="application/octet-stream";
 app.UseStaticFiles(new StaticFileOptions{ContentTypeProvider=types});
-app.MapGet("/api/health",()=>new {status="ok",version="0.4.0-browser",chemistry=SolutionProperties.ModelVersion,electricity=PiecewiseDc.ModelVersion});
+app.MapGet("/api/health",()=>new {status="ok",version="0.5.0-browser",chemistry=SolutionProperties.ModelVersion,electricity=PiecewiseDc.ModelVersion});
 app.MapGet("/api/catalog",()=>new {tools=ToolCatalog.All,elements=Elements.All,reagents=Bench.Reagents});
-app.MapGet("/api/workspace",()=>Bench.View(new WorkspaceData {ClientVersion="0.4.0-browser"}));
+app.MapGet("/api/workspace",()=>Bench.View(new WorkspaceData {ClientVersion="0.5.0-browser"}));
 app.MapPost("/api/command",(Command request)=>
 {
     try {return Results.Ok(Bench.Execute(request));}

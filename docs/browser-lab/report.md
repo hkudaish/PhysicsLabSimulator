@@ -1,5 +1,7 @@
 # Localhost browser laboratory — 0.4
 
+Historical delivery. The current interface, controls, notebook format and guided learning are documented in [the 0.5 guided-lab report](../guided-lab/report.md). The evidence below describes the preserved 0.4 delivery.
+
 Delivered 2026-11-04 following the owner's explicit choice to build a browser version. The browser client lives in [src/BrowserLab](../../src/BrowserLab/README.md); the Godot desktop delivery remains preserved.
 
 ## Run

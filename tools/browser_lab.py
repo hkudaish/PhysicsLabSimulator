@@ -27,7 +27,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action', choices=['serve', 'build'], nargs='?', default='serve')
     parser.add_argument('--no-build', action='store_true', help='Serve an already-built checkout.')
+    parser.add_argument('--port', type=int, default=5080, help='Loopback port (default 5080).')
     args = parser.parse_args()
+    if not 1024 <= args.port <= 65535:
+        parser.error('Choose a port between 1024 and 65535.')
     verify_assets()
     env = environment()
     project = ROOT/'src/BrowserLab/BrowserLab.csproj'
@@ -37,10 +40,11 @@ def main():
         raise SystemExit('Install .NET SDK 10.0.402 or run tools/bootstrap_toolchain.py first.')
     if args.action == 'build':
         return subprocess.call([dotnet, 'build', str(project), '-m:1', '--nologo'], cwd=ROOT, env=env)
-    print('Virtual STEM Browser Lab: http://localhost:5080 (local access only). Ctrl+C stops the server.', flush=True)
+    print(f'Virtual STEM Browser Lab: http://localhost:{args.port} (local access only). Ctrl+C stops the server.', flush=True)
     command = [dotnet, 'run', '--project', str(project), '--no-launch-profile']
     if args.no_build:
         command.append('--no-build')
+    command += ['--', '--port', str(args.port)]
     try:
         return subprocess.call(command, cwd=ROOT, env=env)
     except KeyboardInterrupt:

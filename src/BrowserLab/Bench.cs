@@ -5,7 +5,7 @@ using VirtualStem.Science;
 namespace VirtualStem.Browser;
 
 public sealed record Command(string Action,JsonElement Workspace,string? Tool=null,string? Kind=null,string? Target=null,
-    double? Value=null,double? X=null,double? Z=null,string? Content=null,string? A=null,string? B=null);
+    double? Value=null,double? X=null,double? Z=null,string? Content=null,string? A=null,string? B=null,SessionData? Snapshot=null);
 
 public static class Bench
 {
@@ -19,22 +19,42 @@ public static class Bench
         var before=Session.Clone(current);
         ToolState Tool()=>current.Tools.FirstOrDefault(t=>t.Id==command.Tool)??throw new ArgumentException("Select an existing tool.");
         double Value()=>command.Value is double value&&double.IsFinite(value)?value:throw new ArgumentException("Enter a finite value.");
+        void Place(ToolState tool)
+        {
+            if(current.Tools.Count>=12)throw new ArgumentException("Maximum 12 tools on one bench. Remove a tool first.");
+            if(command.X!=null||command.Z!=null)
+            {
+                double x=command.X??double.NaN,z=command.Z??double.NaN;
+                if(!Session.CanPlace(current,"new",x,z))throw new ArgumentException("That placement overlaps equipment or leaves the workbench.");
+                tool.X=x;tool.Z=z;return;
+            }
+            var spots=from x in Enumerable.Range(0,25) from z in Enumerable.Range(0,13) let px=-3+x*0.25 let pz=-1.5+z*0.25
+                      where Session.CanPlace(current,"new",px,pz) orderby current.Tools.Count==0?0:current.Tools.Min(t=>Math.Pow(t.X-px,2)+Math.Pow(t.Z-pz,2)) descending select (px,pz);
+            if(!spots.Any())throw new ArgumentException("No free placement area. Rearrange or remove tools.");
+            (tool.X,tool.Z)=spots.First();
+        }
         switch(command.Action)
         {
             case "undo":
                 if(history.Count==0)throw new ArgumentException("Nothing to undo.");
                 current=history[^1];history.RemoveAt(history.Count-1);break;
+            case "redo":
+            case "restore":
+                if(command.Snapshot==null||command.Snapshot.Experiment!=current.Experiment)throw new ArgumentException("No valid redo state for this laboratory.");
+                Session.Validate(new WorkspaceData
+                {
+                    Chemistry=current.Experiment=="chemistry"?command.Snapshot:Session.New("chemistry"),
+                    Electricity=current.Experiment=="electricity"?command.Snapshot:Session.New("electricity")
+                });
+                current=Session.Clone(command.Snapshot);break;
             case "reset":current=Session.New(current.Experiment);break;
+            case "clear":current=Session.New(current.Experiment);current.Tools.Clear();current.Wires.Clear();current.SelectedId="";break;
             case "add":
             {
-                if(current.Tools.Count>=12)throw new ArgumentException("Maximum 12 tools on one bench. Remove a tool first.");
                 string kind=command.Kind??"";
                 if(current.Experiment=="chemistry"?!ToolCatalog.Chemistry(kind):!ToolCatalog.Circuit(kind))throw new ArgumentException("Tool belongs to the other lab.");
                 var tool=ToolCatalog.Create(kind,current.Experiment);
-                var spots=from x in Enumerable.Range(0,25) from z in Enumerable.Range(0,13) let px=-3+x*0.25 let pz=-1.5+z*0.25
-                          where Session.CanPlace(current,"new",px,pz) orderby current.Tools.Count==0?0:current.Tools.Min(t=>Math.Pow(t.X-px,2)+Math.Pow(t.Z-pz,2)) descending select (px,pz);
-                if(!spots.Any())throw new ArgumentException("No free placement area. Rearrange or remove tools.");
-                (tool.X,tool.Z)=spots.First();
+                Place(tool);
                 if(kind=="stock"&&command.Content!=null)
                 {
                     if(!Reagents.Contains(command.Content))throw new ArgumentException("Unknown reagent.");
@@ -44,6 +64,30 @@ public static class Bench
                 if(kind is "meter" or "phmeter" or "thermometer")tool.Target=current.Tools.FirstOrDefault(t=>Session.Chemical(t.Kind)&&t.Kind!="stock"&&t.Kind!="water")?.Id;
                 if(kind=="balance")tool.Target=current.Tools.FirstOrDefault(t=>t.Kind=="element")?.Id;
                 current.Tools.Add(tool);current.SelectedId=tool.Id;break;
+            }
+            case "duplicate":
+            {
+                var original=Tool();
+                var copy=Session.Clone(new SessionData{Tools=new(){original}}).Tools[0];
+                copy.Id=Guid.NewGuid().ToString("N");Place(copy);
+                // A duplicated container is empty; duplicating a view never manufactures its solution.
+                if(Session.Chemical(copy.Kind)){copy.VolumeL=0;copy.Moles=0;copy.SoluteId=null;}
+                current.Tools.Add(copy);current.SelectedId=copy.Id;break;
+            }
+            case "empty":
+            {
+                var tool=Tool();
+                if(current.Experiment!="chemistry"||!Session.Chemical(tool.Kind)||tool.VolumeL<=0)throw new ArgumentException("Select a nonempty vessel to discard its contents.");
+                current.Actions.Add(FormattableString.Invariant($"Discard to waste: {tool.VolumeL:G17} L; {tool.Moles:G17} mol; {tool.SoluteId??"water"}"));
+                tool.VolumeL=0;tool.Moles=0;tool.SoluteId=null;break;
+            }
+            case "disconnect":
+            {
+                var tool=Tool();
+                if(current.Experiment!="electricity"||!ToolCatalog.Electrical(tool.Kind))throw new ArgumentException("Select a wired circuit component.");
+                if(current.Wires.RemoveAll(w=>w.A.StartsWith(tool.Id+".",StringComparison.Ordinal)||w.B.StartsWith(tool.Id+".",StringComparison.Ordinal))==0)
+                    throw new ArgumentException("This component has no leads to disconnect.");
+                break;
             }
             case "remove":
             {
@@ -106,6 +150,14 @@ public static class Bench
             }
             case "unwire":
                 if(current.Wires.RemoveAll(w=>w.Id==command.Content)==0)throw new ArgumentException("Choose a lead to disconnect.");break;
+            case "rewire":
+            {
+                var wire=current.Wires.FirstOrDefault(w=>w.Id==command.Content)??throw new ArgumentException("Select an existing lead.");
+                string a=command.A??wire.A,b=command.B??wire.B;
+                if(current.Experiment!="electricity"||a==b||!Session.TerminalExists(current,a)||!Session.TerminalExists(current,b))throw new ArgumentException("Choose valid, different endpoints.");
+                if(current.Wires.Any(w=>w.Id!=wire.Id&&(w.A==a&&w.B==b||w.A==b&&w.B==a)))throw new ArgumentException("These terminals are already connected.");
+                wire.A=a;wire.B=b;break;
+            }
             case "preset":
                 if(current.Experiment!="electricity")throw new ArgumentException("Open the circuit lab first.");
                 current=Preset(command.Content??"");break;
@@ -114,10 +166,10 @@ public static class Bench
         if(command.Action!="undo")
         {
             history.Add(before);if(history.Count>20)history.RemoveAt(0);
-            current.Revision=before.Revision+1;current.Actions.Add(command.Action);if(current.Actions.Count>100)current.Actions.RemoveAt(0);
+            current.Revision=before.Revision+1;current.Actions.Add(command.Action);while(current.Actions.Count>100)current.Actions.RemoveAt(0);
         }
         if(workspace.ActiveExperiment=="chemistry")workspace.Chemistry=current;else workspace.Electricity=current;
-        Session.TrackModels(workspace);workspace.ClientVersion="0.4.0-browser";Session.Validate(workspace);
+        Session.TrackModels(workspace);workspace.ClientVersion="0.5.0-browser";Session.Validate(workspace);
         return View(workspace);
     }
     public static object View(WorkspaceData workspace)

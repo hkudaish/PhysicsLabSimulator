@@ -1,0 +1,33 @@
+{
+  "date": "2026-11-04",
+  "version": "0.5.0-browser",
+  "scienceAssertions": 829,
+  "apiSuitesPassed": 11,
+  "apiSuites": [
+    "test_catalog_offline_assets_and_local_boundary",
+    "test_dilution_transfer_conservation_undo_and_rejection",
+    "test_ph_mass_and_probe_proximity",
+    "test_named_solutions_do_not_invent_reactions",
+    "test_volumetric_aliquot_and_model_headers",
+    "test_dc_presets_and_power",
+    "test_real_wires_short_protection_and_meter_modes",
+    "test_every_catalog_type_and_logic_uses_real_command_validation",
+    "test_bounds_history_and_invalid_import_preserve_state",
+    "test_drop_placement_duplicate_and_discard_to_waste_are_undoable",
+    "test_rewire_disconnect_redo_and_clear_keep_real_circuit_semantics"
+  ],
+  "curriculumTestsPassed": 16,
+  "runnableLessonsVerified": 12,
+  "conceptLessons": 6,
+  "guidedUiChecksPassed": 51,
+  "regressionUiChecksPassed": 33,
+  "buildWarnings": 0,
+  "buildErrors": 0,
+  "commands": [
+    "python3 -m unittest discover -s tests/browser -p test_*.py -q",
+    "python3 tools/dev.py node --test tests/browser/guides.test.mjs",
+    "node tests/browser/guided.smoke.cjs http://localhost:5081",
+    "node tests/browser/lab.smoke.cjs http://localhost:5081"
+  ],
+  "scope": "Isolated development checks; not independent science review, institutional assessment integrity or school-hardware/full-hour qualification."
+}

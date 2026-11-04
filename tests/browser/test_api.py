@@ -146,5 +146,38 @@ class BrowserApi(unittest.TestCase):
         self.assertEqual(http('/api/command',{'Action':'view','Workspace':invalid})[0],400)
         self.command('view');self.assertEqual(self.workspace['SchemaVersion'],1)
 
+    def test_drop_placement_duplicate_and_discard_to_waste_are_undoable(self):
+        self.empty();self.command('add',Kind='water',X=-1.8,Z=0);water=self.workspace['Chemistry']['Tools'][0]
+        self.command('add',Kind='cylinder',X=0,Z=0);cylinder=self.workspace['Chemistry']['Tools'][-1]
+        self.assertEqual(http('/api/command',{'Action':'add','Workspace':self.workspace,'Kind':'beaker','X':0,'Z':0})[0],400)
+        self.command('transfer',Tool=water['Id'],Target=cylinder['Id'],Value=25)
+        self.command('duplicate',Tool=cylinder['Id']);copy_tool=self.workspace['Chemistry']['Tools'][-1]
+        self.assertEqual(copy_tool['VolumeL'],0);self.assertEqual(copy_tool['Moles'],0)
+        self.assertAlmostEqual(sum(t['VolumeL'] for t in self.workspace['Chemistry']['Tools']),.5)
+        self.workspace['Chemistry']['Actions']=['prior action']*100
+        self.command('empty',Tool=cylinder['Id']);empty_snapshot=copy.deepcopy(self.workspace['Chemistry'])
+        self.assertEqual(len(empty_snapshot['Actions']),100);self.assertTrue(any('Discard to waste' in a for a in empty_snapshot['Actions']))
+        self.assertAlmostEqual(sum(t['VolumeL'] for t in empty_snapshot['Tools']),.475)
+        self.command('undo');self.assertAlmostEqual(self.workspace['Chemistry']['Tools'][1]['VolumeL'],.025)
+        self.command('redo',Snapshot=empty_snapshot);self.assertEqual(self.workspace['Chemistry']['Tools'][1]['VolumeL'],0)
+        malformed=copy.deepcopy(empty_snapshot);malformed['Tools']=None
+        self.assertEqual(http('/api/command',{'Action':'redo','Workspace':self.workspace,'Snapshot':malformed})[0],400)
+        wrong_lab=copy.deepcopy(self.workspace['Electricity'])
+        self.assertEqual(http('/api/command',{'Action':'redo','Workspace':self.workspace,'Snapshot':wrong_lab})[0],400)
+
+    def test_rewire_disconnect_redo_and_clear_keep_real_circuit_semantics(self):
+        self.circuit('led')
+        lead=next(w for w in self.workspace['Electricity']['Wires'] if w['B']=='extra.a')
+        self.command('rewire',Content=lead['Id'],B='extra.b')
+        other=next(w for w in self.workspace['Electricity']['Wires'] if w['A']=='extra.b')
+        self.command('rewire',Content=other['Id'],A='extra.a')
+        self.assertAlmostEqual(abs(self.result['readings']['extra']['branch']['CurrentA']),9/(1e9+1000),places=12)
+        before=copy.deepcopy(self.workspace['Electricity'])
+        self.command('disconnect',Tool='extra');self.assertFalse(any(w['A'].startswith('extra.') or w['B'].startswith('extra.') for w in self.workspace['Electricity']['Wires']))
+        self.command('undo');self.assertEqual(self.workspace['Electricity']['Wires'],before['Wires'])
+        self.command('restore',Snapshot=before);self.assertEqual(self.workspace['Electricity']['Wires'],before['Wires'])
+        self.command('clear');self.assertEqual(self.workspace['Electricity']['Tools'],[])
+        self.command('undo');self.assertEqual(self.workspace['Electricity']['Wires'],before['Wires'])
+
 
 if __name__=='__main__':unittest.main(verbosity=2)
